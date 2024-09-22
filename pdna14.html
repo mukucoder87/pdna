@@ -146,6 +146,11 @@
             color: #212529;
         }
     </style>
+
+       
+
+
+
     <!-- Include Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -153,6 +158,48 @@
 
     <h1>A User Friendly Tool For Post Disaster Needs Estimation</h1>
     <div class="container">
+
+<!-- Assam District Dropdown -->
+<div class="input-group">
+    <label for="district">Select District</label>
+    <select id="district">
+        <option value="">Select District</option>
+        <option value="Baksa">Baksa</option>
+        <option value="Barpeta">Barpeta</option>
+        <option value="Biswanath">Biswanath</option>
+        <option value="Bongaigaon">Bongaigaon</option>
+        <option value="Cachar">Cachar</option>
+        <option value="Charaideo">Charaideo</option>
+        <option value="Chirang">Chirang</option>
+        <option value="Darrang">Darrang</option>
+        <option value="Dhemaji">Dhemaji</option>
+        <option value="Dhubri">Dhubri</option>
+        <option value="Dibrugarh">Dibrugarh</option>
+        <option value="Dima Hasao">Dima Hasao</option>
+        <option value="Goalpara">Goalpara</option>
+        <option value="Golaghat">Golaghat</option>
+        <option value="Hailakandi">Hailakandi</option>
+        <option value="Hojai">Hojai</option>
+        <option value="Jorhat">Jorhat</option>
+        <option value="Kamrup">Kamrup</option>
+        <option value="Kamrup Metropolitan">Kamrup Metropolitan</option>
+        <option value="Karbi Anglong">Karbi Anglong</option>
+        <option value="Karimganj">Karimganj</option>
+        <option value="Kokrajhar">Kokrajhar</option>
+        <option value="Lakhimpur">Lakhimpur</option>
+        <option value="Majuli">Majuli</option>
+        <option value="Morigaon">Morigaon</option>
+        <option value="Nagaon">Nagaon</option>
+        <option value="Nalbari">Nalbari</option>
+        <option value="Sivasagar">Sivasagar</option>
+        <option value="Sonitpur">Sonitpur</option>
+        <option value="South Salmara-Mankachar">South Salmara-Mankachar</option>
+        <option value="Tinsukia">Tinsukia</option>
+        <option value="Udalguri">Udalguri</option>
+        <option value="West Karbi Anglong">West Karbi Anglong</option>
+    </select>
+</div>
+
         <h2>Select Sector and Component</h2>
 
         <div class="input-group">
@@ -168,6 +215,7 @@
                 <option value="Environment/Forests">Environment/Forests</option>
                 <option value="Energy & Utility Infrastructure">Energy & Utility Infrastructure</option>
                 <option value="Public Services and Other Infrastructure">Public Services and Other Infrastructure</option>
+                <option value="Housing Infrastructure">Housing Infrastructure</option>
                 <option value="Other">Other</option>
             </select>
             <div id="custom-sector-div" style="display:none;">
@@ -341,7 +389,7 @@
             <!-- Pie Chart Container -->
             <canvas id="damageChart" style="margin-top: 40px;"></canvas>
 
-            <!-- Attribution -->
+            <!-- Attribution(Credits) -->
             <p style="margin-top: 40px; font-style: italic;">
                 Tool designed and conceptualized by <a href="mailto:mukundaupadhyay@gmail.com">Mukunda Upadhyay</a>.
                 Connect with him on <a href="https://www.linkedin.com/in/mukunda-upadhyay-692351279/" target="_blank">LinkedIn</a>.
@@ -472,6 +520,16 @@
                 "Religious Structures",
                 "Community Radio Stations",
                 "Other"
+            ],
+              "Housing Infrastructure": [
+                "Pucca House",
+                "Kutcha House",
+                "Sem-Pucca House",
+                "Toilets",
+                "Sheds",
+                "Household Parking space",
+                "Retaining Wall",
+                "Any other structure not listed"
             ]
         };
 
@@ -611,7 +669,7 @@
                     <input type="text" id="unit-cost-source-other-${id}" placeholder="Enter source">
                 </div>
 
-                <label>Average Loss Per Day (₹) <span style="font-weight: normal; color: #6c757d;" title="Optional">[If it is difficult to quantify loss within this component in monetary terms you may skip]</span></label>
+                <label>Average Loss Per Day (₹) <span style="font-weight: normal; color: #6c757d;" title="Optional">[If it is difficult to quantify loss faced within this component in monetary terms you may skip]</span></label>
                 <input type="number" id="average-loss-${id}" placeholder="Enter average loss per day" min="0" step="0.01">
 
                 <label>Duration of Loss (Days)</label>
@@ -664,6 +722,19 @@
         let unitCostDetails = []; // For Summary Table 4
 
         function addToSummary() {
+    // Add district selection logic at the top
+    const district = document.getElementById('district').value;
+    if (!district) {
+        alert('Please select a district.');
+        return;
+    }
+
+    // Update the summary titles to include the district
+    document.querySelectorAll('h3').forEach((h3) => {
+        if (h3.textContent.includes('Summary Table')) {
+            h3.innerText = h3.textContent.split(':')[0] + `: ${district}`;
+        }
+    });
             let allInputsValid = true;
             allEntries = []; // Reset entries to prevent duplicates
             summaryData = {}; // Reset summary data
@@ -686,6 +757,36 @@
                 const lossDuration = parseFloat(document.getElementById(`loss-duration-${id}`)?.value) || 0;
                 const totalRecoveryCost = parseFloat(document.getElementById(`total-recovery-cost-${id}`)?.value) || 0;
                 const reconstructionCostPerUnit = parseFloat(document.getElementById(`reconstruction-cost-unit-${id}`)?.value) || 0;
+
+ // Update the titles for each specific table based on area
+        document.querySelectorAll('h3').forEach((h3) => {
+            if (h3.textContent.includes('Summary Table 1.1')) {
+                h3.innerText = `Summary Table 1.1: Baseline and Damage Analysis - ${district} (Rural)`;
+            }
+            if (h3.textContent.includes('Summary Table 1.2')) {
+                h3.innerText = `Summary Table 1.2: Baseline and Damage Analysis - ${district} (Urban)`;
+            }
+            if (h3.textContent.includes('Summary Table 1.3')) {
+                h3.innerText = `Summary Table 1.3: Population Analysis - ${district} (Rural)`;
+            }
+            if (h3.textContent.includes('Summary Table 1.4')) {
+                h3.innerText = `Summary Table 1.4: Population Analysis - ${district} (Urban)`;
+            }
+            if (h3.textContent.includes('Summary Table 2.1')) {
+                h3.innerText = `Summary Table 2.1: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Rural)`;
+            }
+            if (h3.textContent.includes('Summary Table 2.2')) {
+                h3.innerText = `Summary Table 2.2: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Urban)`;
+            }
+
+            // For Summary Table 3 and 4, just show the district without Rural/Urban
+            if (h3.textContent.includes('Summary Table 3')) {
+                h3.innerText = `Summary Table 3: Sector-wise Damage, Loss, Reconstruction and Recovery Needs - ${district}`;
+            }
+            if (h3.textContent.includes('Summary Table 4')) {
+                h3.innerText = `Summary Table 4: Sector Unit Cost Details - ${district}`;
+            }
+        });
 
                 // Get unit cost based on selected option
                 const selectedUnitCostOption = document.querySelector(`input[name="unit-cost-option-${id}"]:checked`)?.value;
@@ -1044,29 +1145,63 @@
             });
         }
 
-        function exportToExcel(tableId, filename) {
-            let csvContent = '';
-            const rows = document.querySelectorAll(`#${tableId} tr`);
-            rows.forEach(row => {
-                const cols = row.querySelectorAll('td, th');
-                const rowData = [];
-                cols.forEach(col => {
-                    let data = col.innerText.replace(/,/g, ''); // Remove commas to prevent CSV misalignment
-                    rowData.push('"' + data + '"');
-                });
-                csvContent += rowData.join(',') + '\r\n';
-            });
+       function exportToExcel(tableId, baseFilename) {
+    const district = document.getElementById('district').value || 'District';
+    
+    let filename;
+    let title;  // Store the exact table title
 
-            // Create a blob and trigger a download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+    // Set filename and title based on tableId
+    if (tableId === 'summary-table-1-rural') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Rural.csv`;
+        title = `Summary Table 1.1: Baseline and Damage Analysis - ${district} (Rural)`;
+    } else if (tableId === 'summary-table-1-urban') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Urban.csv`;
+        title = `Summary Table 1.2: Baseline and Damage Analysis - ${district} (Urban)`;
+    } else if (tableId === 'summary-table-2-rural') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Rural.csv`;
+        title = `Summary Table 2.1: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Rural)`;
+    } else if (tableId === 'summary-table-2-urban') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Urban.csv`;
+        title = `Summary Table 2.2: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Urban)`;
+    } else if (tableId === 'summary-table-3') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}.csv`;
+        title = `Summary Table 3: Sector-wise Damage, Loss, Reconstruction and Recovery Needs - ${district}`;
+    } else if (tableId === 'summary-table-4') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}.csv`;
+        title = `Summary Table 4: Sector Unit Cost Details - ${district}`;
+    } else {
+        title = `Summary Table for ${district}`;
+    }
+
+    let csvContent = '';
+    
+    // Add the title row at the top of the CSV file
+    csvContent += `${title}\r\n\r\n`;  // Add title with district and area type
+
+    // Extract rows from the table
+    const rows = document.querySelectorAll(`#${tableId} tr`);
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const rowData = [];
+        cols.forEach(col => {
+            let data = col.innerText.replace(/,/g, ''); // Remove commas to prevent CSV misalignment
+            rowData.push('"' + data + '"');
+        });
+        csvContent += rowData.join(',') + '\r\n';
+    });
+
+    // Create a blob and trigger a download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+       
     </script>
 
 </body>
