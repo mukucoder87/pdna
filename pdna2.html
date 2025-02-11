@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags and title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A User Friendly Tool For Post Disaster Needs Estimation</title>
+    <!-- Updated CSS for improved interface -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #343a40;
+        }
+        h1 {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .input-group {
+            margin-bottom: 25px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #495057;
+        }
+        .input-group select, .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .input-group input:invalid {
+            border-color: red;
+        }
+        .button {
+            margin-top: 30px;
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #218838;
+        }
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+        .result {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f1f3f5;
+            text-align: center;
+            border-radius: 6px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+            margin-top: 10px;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .button {
+                font-size: 16px;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
+        /* Styles for export button */
+        .export-btn {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #17a2b8;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .export-btn:hover {
+            background-color: #138496;
+        }
+        /* Styles for the summary text box */
+        .summary-text {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #212529;
+        }
+    </style>
+
+       
+
+
+
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <h1>A User Friendly Tool For Post Disaster Needs Estimation</h1>
+    <div class="container">
+
+<!-- Assam District Dropdown -->
+<div class="input-group">
+    <label for="district">Select District</label>
+    <select id="district">
+        <option value="">Select District</option>
+        <option value="Baksa">Baksa</option>
+        <option value="Barpeta">Barpeta</option>
+        <option value="Biswanath">Biswanath</option>
+        <option value="Bongaigaon">Bongaigaon</option>
+        <option value="Cachar">Cachar</option>
+        <option value="Charaideo">Charaideo</option>
+        <option value="Chirang">Chirang</option>
+        <option value="Darrang">Darrang</option>
+        <option value="Dhemaji">Dhemaji</option>
+        <option value="Dhubri">Dhubri</option>
+        <option value="Dibrugarh">Dibrugarh</option>
+        <option value="Dima Hasao">Dima Hasao</option>
+        <option value="Goalpara">Goalpara</option>
+        <option value="Golaghat">Golaghat</option>
+        <option value="Hailakandi">Hailakandi</option>
+        <option value="Hojai">Hojai</option>
+        <option value="Jorhat">Jorhat</option>
+        <option value="Kamrup">Kamrup</option>
+        <option value="Kamrup Metropolitan">Kamrup Metropolitan</option>
+        <option value="Karbi Anglong">Karbi Anglong</option>
+        <option value="Karimganj">Karimganj</option>
+        <option value="Kokrajhar">Kokrajhar</option>
+        <option value="Lakhimpur">Lakhimpur</option>
+        <option value="Majuli">Majuli</option>
+        <option value="Morigaon">Morigaon</option>
+        <option value="Nagaon">Nagaon</option>
+        <option value="Nalbari">Nalbari</option>
+        <option value="Sivasagar">Sivasagar</option>
+        <option value="Sonitpur">Sonitpur</option>
+        <option value="South Salmara-Mankachar">South Salmara-Mankachar</option>
+        <option value="Tinsukia">Tinsukia</option>
+        <option value="Udalguri">Udalguri</option>
+        <option value="West Karbi Anglong">West Karbi Anglong</option>
+    </select>
+</div>
+
+        <h2>Select Sector and Component</h2>
+
+        <div class="input-group">
+            <label for="category">Select Sector</label>
+            <select id="category" onchange="loadComponents()">
+                <option value="">Select Sector</option>
+                <!-- Updated sector options -->
+                <option value="WASH (Water, Sanitation, and Hygiene)">WASH (Water, Sanitation, and Hygiene)</option>
+                <option value="Education">Education</option>
+                <option value="Health">Health</option>
+                <option value="Livestock & Agriculture">Livestock & Agriculture</option>
+                <option value="Local-Level Infrastructure">Local-Level Infrastructure</option>
+                <option value="Environment/Forests">Environment/Forests</option>
+                <option value="Energy & Utility Infrastructure">Energy & Utility Infrastructure</option>
+                <option value="Public Services and Other Infrastructure">Public Services and Other Infrastructure</option>
+                <option value="Housing Infrastructure">Housing Infrastructure</option>
+                <option value="Other">Other</option>
+            </select>
+            <div id="custom-sector-div" style="display:none;">
+                <label>Custom Sector Name</label>
+                <input type="text" id="custom-sector" placeholder="Enter custom sector name">
+            </div>
+        </div>
+
+        <div class="input-group" id="component-group" style="display:none;">
+            <label for="component">Select Component</label>
+            <select id="component">
+                <!-- Dynamically filled components based on selected category -->
+            </select>
+            <div id="custom-component-div" style="display:none;">
+                <label>Custom Component Name</label>
+                <input type="text" id="custom-component-main" placeholder="Enter custom component name">
+            </div>
+            <button class="button" onclick="addSector()">Add Component</button>
+        </div>
+
+        <div id="selected-sectors">
+            <!-- Dynamic sector input groups will be placed here -->
+        </div>
+
+        <button class="button" onclick="addToSummary()">Submit for Calculation</button>
+
+        <div id="result" class="result" style="display:none;">
+            <!-- New Summary Tables -->
+            <h3>Summary Table 1.1: Baseline and Damage Analysis - Rural</h3>
+            <table id="summary-table-1-rural">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Component</th>
+                        <th>Total Units Prior</th>
+                        <th>Total Units Damaged</th>
+                        <th>Avg. Proportion Damaged (%)</th>
+                        <th>Units to be Reconstructed</th>
+                        <th>Proportion to be Reconstructed (%)</th>
+                        <th>Avg. Lost Days Due to Disruption</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-1-rural', 'PDNA_Summary_Table_1_Rural.csv')">Export Summary Table 1.1 to Excel</button>
+
+            <h3 style="margin-top: 50px;">Summary Table 1.2: Baseline and Damage Analysis - Urban</h3>
+            <table id="summary-table-1-urban">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Component</th>
+                        <th>Total Units Prior</th>
+                        <th>Total Units Damaged</th>
+                        <th>Avg. Proportion Damaged (%)</th>
+                        <th>Units to be Reconstructed</th>
+                        <th>Proportion to be Reconstructed (%)</th>
+                        <th>Avg. Lost Days Due to Disruption</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-1-urban', 'PDNA_Summary_Table_1_Urban.csv')">Export Summary Table 1.2 to Excel</button>
+
+            <!-- New Population Tables -->
+            <h3 style="margin-top: 50px;">Summary Table 1.3: Population Analysis - Rural</h3>
+            <table id="summary-table-1-population-rural">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Component</th>
+                        <th>Population per Unit</th>
+                        <th>Total Population Affected</th>
+                        <th>Population Benefited After Reconstruction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-1-population-rural', 'PDNA_Summary_Table_1.3_Rural.csv')">Export Summary Table 1.3 to Excel</button>
+
+            <h3 style="margin-top: 50px;">Summary Table 1.4: Population Analysis - Urban</h3>
+            <table id="summary-table-1-population-urban">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Component</th>
+                        <th>Population per Unit</th>
+                        <th>Total Population Affected</th>
+                        <th>Population Benefited After Reconstruction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-1-population-urban', 'PDNA_Summary_Table_1.4_Urban.csv')">Export Summary Table 1.4 to Excel</button>
+
+            <!-- Existing Summary Tables -->
+            <h3 style="margin-top: 50px;">Summary Table 2.1: Component Analysis - Rural</h3>
+            <table id="summary-table-2-rural">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Total Units Damaged</th>
+                        <th>Avg. % Damage</th>
+                        <th>Total Loss Cost (₹)</th>
+                        <th>Total Recovery Cost (₹)</th>
+                        <th>Total Reconstruction Cost (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-2-rural', 'PDNA_Summary_Table_2_Rural.csv')">Export Summary Table 2.1 to Excel</button>
+
+            <h3 style="margin-top: 50px;">Summary Table 2.2: Component Analysis - Urban</h3>
+            <table id="summary-table-2-urban">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Total Units Damaged</th>
+                        <th>Avg. % Damage</th>
+                        <th>Total Loss Cost (₹)</th>
+                        <th>Total Recovery Cost (₹)</th>
+                        <th>Total Reconstruction Cost (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-2-urban', 'PDNA_Summary_Table_2_Urban.csv')">Export Summary Table 2.2 to Excel</button>
+
+            <!-- Summary Text Box -->
+            <div class="summary-text" id="summary-text">
+                <!-- Total amounts will be displayed here -->
+            </div>
+
+            <h3 style="margin-top: 50px;">Summary Table 3: Sector-wise Totals</h3>
+            <table id="summary-table-3">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Total Damage (₹)</th>
+                        <th>Total Loss (₹)</th>
+                        <th>Total Recovery Cost (₹)</th>
+                        <th>Total Reconstruction Cost (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-3', 'PDNA_Summary_Table_3.csv')">Export Summary Table 3 to Excel</button>
+
+            <h3 style="margin-top: 50px;">Summary Table 4: Unit Cost Details</h3>
+            <table id="summary-table-4">
+                <thead>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Component</th>
+                        <th>Average Unit Cost (₹)</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button class="export-btn" onclick="exportToExcel('summary-table-4', 'PDNA_Summary_Table_4.csv')">Export Summary Table 4 to Excel</button>
+
+            <!-- Pie Chart Container -->
+            <canvas id="damageChart" style="margin-top: 40px;"></canvas>
+
+            <!-- Attribution(Credits) -->
+            <p style="margin-top: 40px; font-style: italic;">
+                Tool designed and conceptualized by <a href="mailto:mukundaupadhyay@gmail.com">Mukunda Upadhyay</a>.
+                Connect with him on <a href="https://www.linkedin.com/in/mukunda-upadhyay-692351279/" target="_blank">LinkedIn</a>.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let categoryCount = 0;
+        let categoryIds = [];
+        // Updated components without "Number of units" suffixes
+        const components = {
+            "WASH (Water, Sanitation, and Hygiene)": [
+                "Piped Water Supply Scheme",
+                "Community Managed Sanitary Complex",
+                "Individual Household Toilets",
+                "Water Purification Plants",
+                "Wells",
+                "Tube Wells",
+                "Sanitation Pipelines",
+                "Waste Management Plants",
+                "Waste Bins",
+                "Wastewater Treatment Plants",
+                "Rainwater Harvesting Structures",
+                "Public Restrooms",
+                "Other"
+            ],
+            "Education": [
+                "Primary Schools",
+                "Secondary Schools",
+                "Non-Formal Schools",
+                "Public Libraries",
+                "Community Centers",
+                "Other"
+            ],
+            "Health": [
+                "Primary Health Centers",
+                "Community Health Centers",
+                "Sub Centers",
+                "Ambulances",
+                "Fire Hydrants",
+                "Disaster Shelters",
+                "Other"
+            ],
+            "Livestock & Agriculture": [
+                "Hen",
+                "Duck",
+                "Cows",
+                "Buffaloes",
+                "Others (Livestock)",
+                "Livestock Shelters",
+                "Agricultural Land",
+                "Fishing Ponds",
+                "Irrigation Pumps",
+                "Farm Equipment",
+                "Dairy Farms",
+                "Poultry Farms",
+                "Greenhouses",
+                "Grain Storage Silos",
+                "Livestock Feed Storage",
+                "Cattle Sheds",
+                "Other"
+            ],
+            "Local-Level Infrastructure": [
+                "Community Roads",
+                "Bridges",
+                "Culverts",
+                "Train Tracks",
+                "Kutcha Houses",
+                "Concrete Houses",
+                "Semi Pucca Houses",
+                "Community Halls",
+                "Streetlights",
+                "Electric Poles",
+                "Markets",
+                "Check Dams",
+                "Footpaths",
+                "Traffic Signals",
+                "Traffic Signs",
+                "Bus Terminals",
+                "Railway Stations",
+                "Parking Lots",
+                "Ports and Harbors",
+                "Boats",
+                "Docks and Jetties",
+                "Solar Panels",
+                "Fire Stations",
+                "Police Stations",
+                "Prisons",
+                "Shopping Malls",
+                "Power Substations",
+                "Flood Embankments",
+                "Community Gardens",
+                "Landfill Sites",
+                "Harbor Cranes",
+                "Helipads",
+                "Meteorological Stations",
+                "Flood Warning Systems",
+                "Traffic Control Towers",
+                "Other"
+            ],
+            "Environment/Forests": [
+                "Trees",
+                "Lakes and Waterbodies",
+                "Forest and Protected Areas",
+                "Public Parks",
+                "Fruit Orchards",
+                "Other"
+            ],
+            "Energy & Utility Infrastructure": [
+                "Electricity Grid",
+                "Wind Turbines",
+                "Gas Pipelines",
+                "Oil Pipelines",
+                "Water Pumps",
+                "Electric Transformers",
+                "Reservoirs",
+                "Power Stations",
+                "Other"
+            ],
+            "Public Services and Other Infrastructure": [
+                "Community Kitchens",
+                "Airports",
+                "Fire Trucks",
+                "Boats for Emergency Response",
+                "Markets (Stalls)",
+                "Crematoriums",
+                "Religious Structures",
+                "Community Radio Stations",
+                "Other"
+            ],
+              "Housing Infrastructure": [
+                "Pucca House",
+                "Kutcha House",
+                "Sem-Pucca House",
+                "Toilets",
+                "Sheds",
+                "Household Parking space",
+                "Retaining Wall",
+                "Any other structure not listed"
+            ]
+        };
+
+        function loadComponents() {
+            const category = document.getElementById('category').value;
+            const componentSelect = document.getElementById('component');
+            const componentGroup = document.getElementById('component-group');
+            const customSectorDiv = document.getElementById('custom-sector-div');
+            const customComponentDiv = document.getElementById('custom-component-div');
+            componentSelect.innerHTML = '';
+
+            if (category) {
+                if (category === 'Other') {
+                    customSectorDiv.style.display = 'block';
+                    componentGroup.style.display = 'block';
+                    componentSelect.style.display = 'none';
+                    customComponentDiv.style.display = 'block';
+                } else {
+                    customSectorDiv.style.display = 'none';
+                    componentSelect.style.display = 'block';
+                    customComponentDiv.style.display = 'none';
+
+                    if (components[category]) {
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.text = 'Select Component';
+                        componentSelect.add(defaultOption);
+
+                        components[category].forEach(comp => {
+                            const option = document.createElement('option');
+                            option.value = comp;
+                            option.text = comp;
+                            componentSelect.add(option);
+                        });
+                        componentGroup.style.display = 'block';
+                    } else {
+                        componentGroup.style.display = 'none';
+                    }
+                }
+            } else {
+                componentGroup.style.display = 'none';
+                customSectorDiv.style.display = 'none';
+            }
+        }
+
+        function addSector() {
+            const category = document.getElementById('category').value;
+            const componentSelect = document.getElementById('component');
+            let component = componentSelect.value;
+            const customSectorName = document.getElementById('custom-sector').value;
+            const customComponentNameMain = document.getElementById('custom-component-main').value;
+
+            if (category) {
+                if (category === 'Other') {
+                    if (!customSectorName || !customComponentNameMain) {
+                        alert('Please enter custom sector and component names.');
+                        return;
+                    }
+                } else if (component === 'Other') {
+                    if (!customComponentNameMain) {
+                        alert('Please enter a custom component name.');
+                        return;
+                    }
+                } else if (!component) {
+                    alert('Please select a component.');
+                    return;
+                }
+
+                categoryCount++;
+                let id = categoryCount;
+                categoryIds.push(id);
+                createCategoryInputs(category, component, id, customSectorName, customComponentNameMain);
+            }
+        }
+
+        function createCategoryInputs(category, component, id, customSectorName = '', customComponentNameMain = '') {
+            let sectorName = category;
+            let componentName = component;
+
+            if (category === 'Other') {
+                sectorName = customSectorName || 'Other Sector';
+                componentName = customComponentNameMain || 'Custom Component';
+            } else if (component === 'Other') {
+                componentName = customComponentNameMain || 'Custom Component';
+            }
+
+            const sectorDiv = document.createElement('div');
+            sectorDiv.classList.add('input-group');
+            sectorDiv.setAttribute('id', `category-${id}`);
+            sectorDiv.innerHTML = `
+                <h3>${componentName} (${sectorName})</h3>
+                
+                <label>Area</label>
+                <select id="area-${id}">
+                    <option value="Rural">Rural</option>
+                    <option value="Urban">Urban</option>
+                </select>
+
+                <label>Total Number of Units Prior to Disaster</label>
+                <input type="number" id="units-prior-${id}" placeholder="Enter total units prior to disaster" min="0" step="0.01" required>
+
+                <label>Total Units Damaged</label>
+                <input type="number" id="units-damaged-${id}" placeholder="Enter total units damaged" min="0" step="0.01" required>
+
+                <label>Number of Units to be Reconstructed</label>
+                <input type="number" id="units-reconstructed-${id}" placeholder="Enter number of units to be reconstructed" min="0" step="0.01" required>
+
+                <label>Average Lost Days Due to Service Disruption</label>
+                <input type="number" id="average-lost-days-${id}" placeholder="Enter average lost days" min="0" step="0.01" required>
+
+                <label>Population Served per Unit</label>
+                <input type="number" id="population-per-unit-${id}" placeholder="Enter population served per unit" min="0" step="1" required>
+
+                <label>Average Unit Cost</label>
+                <div>
+                    <input type="radio" name="unit-cost-option-${id}" value="norms" onchange="showUnitCostOption(${id})" required> As per Norms
+                    <input type="radio" name="unit-cost-option-${id}" value="actuals" onchange="showUnitCostOption(${id})"> As per Actuals
+                    <input type="radio" name="unit-cost-option-${id}" value="other" onchange="showUnitCostOption(${id})"> Other
+                </div>
+
+                <div id="unit-cost-norms-${id}" style="display:none;">
+                    <label>Average Unit Cost (₹) as per Norms</label>
+                    <input type="number" id="unit-cost-value-norms-${id}" placeholder="Enter unit cost" min="0" step="0.01">
+                    <label>Source (e.g., SDRF norms)</label>
+                    <input type="text" id="unit-cost-source-norms-${id}" placeholder="Enter source">
+                </div>
+
+                <div id="unit-cost-actuals-${id}" style="display:none;">
+                    <label>Average Unit Cost (₹) as per Actuals</label>
+                    <input type="number" id="unit-cost-value-actuals-${id}" placeholder="Enter unit cost" min="0" step="0.01">
+                </div>
+
+                <div id="unit-cost-other-${id}" style="display:none;">
+                    <label>Average Unit Cost (₹) - Other</label>
+                    <input type="number" id="unit-cost-value-other-${id}" placeholder="Enter unit cost" min="0" step="0.01">
+                    <label>Source</label>
+                    <input type="text" id="unit-cost-source-other-${id}" placeholder="Enter source">
+                </div>
+
+                <label>Average Loss Per Day (₹) <span style="font-weight: normal; color: #6c757d;" title="Optional">[If it is difficult to quantify loss faced within this component in monetary terms you may skip]</span></label>
+                <input type="number" id="average-loss-${id}" placeholder="Enter average loss per day" min="0" step="0.01">
+
+                <label>Duration of Loss (Days)</label>
+                <input type="number" id="loss-duration-${id}" placeholder="Enter duration of loss" min="0" step="0.01">
+
+                <label>Total Recovery Cost (₹)</label>
+                <input type="number" id="total-recovery-cost-${id}" placeholder="Enter total recovery cost" min="0" step="0.01" required>
+
+                <label>Reconstruction Cost Per Unit (₹)</label>
+                <input type="number" id="reconstruction-cost-unit-${id}" placeholder="Enter reconstruction cost per unit" min="0" step="0.01" required>
+
+                <div class="error" id="error-${id}">Please fill out all required fields correctly.</div>
+                <button class="remove-btn" onclick="removeCategory(${id})">Remove Component</button>
+            `;
+            
+            document.getElementById('selected-sectors').appendChild(sectorDiv);
+        }
+
+        function showUnitCostOption(id) {
+            const selectedOption = document.querySelector(`input[name="unit-cost-option-${id}"]:checked`).value;
+
+            // Hide all unit cost input sections
+            document.getElementById(`unit-cost-norms-${id}`).style.display = 'none';
+            document.getElementById(`unit-cost-actuals-${id}`).style.display = 'none';
+            document.getElementById(`unit-cost-other-${id}`).style.display = 'none';
+
+            // Show the selected unit cost input section
+            if (selectedOption === 'norms') {
+                document.getElementById(`unit-cost-norms-${id}`).style.display = 'block';
+            } else if (selectedOption === 'actuals') {
+                document.getElementById(`unit-cost-actuals-${id}`).style.display = 'block';
+            } else if (selectedOption === 'other') {
+                document.getElementById(`unit-cost-other-${id}`).style.display = 'block';
+            }
+        }
+
+        function removeCategory(id) {
+            const categoryDiv = document.getElementById(`category-${id}`);
+            if (categoryDiv) {
+                categoryDiv.remove();
+                // Remove the id from categoryIds array
+                categoryIds = categoryIds.filter(catId => catId !== id);
+            }
+        }
+
+        // Store all submissions in an array to keep track of multiple entries
+        let allEntries = [];
+        let summaryData = {}; // For Summary Tables
+        let sectorTotals = {}; // For Summary Table 3
+        let unitCostDetails = []; // For Summary Table 4
+
+        function addToSummary() {
+    // Add district selection logic at the top
+    const district = document.getElementById('district').value;
+    if (!district) {
+        alert('Please select a district.');
+        return;
+    }
+
+    // Update the summary titles to include the district
+    document.querySelectorAll('h3').forEach((h3) => {
+        if (h3.textContent.includes('Summary Table')) {
+            h3.innerText = h3.textContent.split(':')[0] + `: ${district}`;
+        }
+    });
+            let allInputsValid = true;
+            allEntries = []; // Reset entries to prevent duplicates
+            summaryData = {}; // Reset summary data
+            sectorTotals = {}; // Reset sector totals
+            unitCostDetails = []; // Reset unit cost details
+
+            let totalDamageAll = 0;
+            let totalLossAll = 0;
+            let totalRecoveryAll = 0;
+            let totalReconstructionAll = 0;
+
+            for (let id of categoryIds) {
+                const area = document.getElementById(`area-${id}`)?.value;
+                const unitsPrior = parseFloat(document.getElementById(`units-prior-${id}`)?.value) || 0;
+                const unitsDamaged = parseFloat(document.getElementById(`units-damaged-${id}`)?.value) || 0;
+                const unitsReconstructed = parseFloat(document.getElementById(`units-reconstructed-${id}`)?.value) || 0;
+                const avgLostDays = parseFloat(document.getElementById(`average-lost-days-${id}`)?.value) || 0;
+                const populationPerUnit = parseFloat(document.getElementById(`population-per-unit-${id}`)?.value) || 0;
+                const avgLoss = parseFloat(document.getElementById(`average-loss-${id}`)?.value) || 0;
+                const lossDuration = parseFloat(document.getElementById(`loss-duration-${id}`)?.value) || 0;
+                const totalRecoveryCost = parseFloat(document.getElementById(`total-recovery-cost-${id}`)?.value) || 0;
+                const reconstructionCostPerUnit = parseFloat(document.getElementById(`reconstruction-cost-unit-${id}`)?.value) || 0;
+
+ // Update the titles for each specific table based on area
+        document.querySelectorAll('h3').forEach((h3) => {
+            if (h3.textContent.includes('Summary Table 1.1')) {
+                h3.innerText = `Summary Table 1.1: Baseline and Damage Analysis - ${district} (Rural)`;
+            }
+            if (h3.textContent.includes('Summary Table 1.2')) {
+                h3.innerText = `Summary Table 1.2: Baseline and Damage Analysis - ${district} (Urban)`;
+            }
+            if (h3.textContent.includes('Summary Table 1.3')) {
+                h3.innerText = `Summary Table 1.3: Population Analysis - ${district} (Rural)`;
+            }
+            if (h3.textContent.includes('Summary Table 1.4')) {
+                h3.innerText = `Summary Table 1.4: Population Analysis - ${district} (Urban)`;
+            }
+            if (h3.textContent.includes('Summary Table 2.1')) {
+                h3.innerText = `Summary Table 2.1: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Rural)`;
+            }
+            if (h3.textContent.includes('Summary Table 2.2')) {
+                h3.innerText = `Summary Table 2.2: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Urban)`;
+            }
+
+            // For Summary Table 3 and 4, just show the district without Rural/Urban
+            if (h3.textContent.includes('Summary Table 3')) {
+                h3.innerText = `Summary Table 3: Sector-wise Damage, Loss, Reconstruction and Recovery Needs - ${district}`;
+            }
+            if (h3.textContent.includes('Summary Table 4')) {
+                h3.innerText = `Summary Table 4: Sector Unit Cost Details - ${district}`;
+            }
+        });
+
+                // Get unit cost based on selected option
+                const selectedUnitCostOption = document.querySelector(`input[name="unit-cost-option-${id}"]:checked`)?.value;
+                let unitCost = 0;
+                let unitCostSource = '';
+
+                if (selectedUnitCostOption === 'norms') {
+                    unitCost = parseFloat(document.getElementById(`unit-cost-value-norms-${id}`)?.value) || 0;
+                    unitCostSource = document.getElementById(`unit-cost-source-norms-${id}`)?.value || 'Norms';
+                } else if (selectedUnitCostOption === 'actuals') {
+                    unitCost = parseFloat(document.getElementById(`unit-cost-value-actuals-${id}`)?.value) || 0;
+                    unitCostSource = 'Actuals';
+                } else if (selectedUnitCostOption === 'other') {
+                    unitCost = parseFloat(document.getElementById(`unit-cost-value-other-${id}`)?.value) || 0;
+                    unitCostSource = document.getElementById(`unit-cost-source-other-${id}`)?.value || 'Other';
+                }
+
+                const errorDiv = document.getElementById(`error-${id}`);
+                if (
+                    unitsPrior <= 0 || unitsDamaged < 0 || unitsDamaged > unitsPrior ||
+                    unitsReconstructed < 0 || unitsReconstructed > unitsDamaged ||
+                    avgLostDays < 0 || unitCost <= 0 ||
+                    totalRecoveryCost < 0 || reconstructionCostPerUnit < 0 ||
+                    area === '' || !selectedUnitCostOption ||
+                    populationPerUnit < 0
+                ) {
+                    errorDiv.style.display = 'block';
+                    allInputsValid = false;
+                } else {
+                    errorDiv.style.display = 'none';
+                }
+
+                if (allInputsValid) {
+                    const avgProportionDamaged = ((unitsDamaged / unitsPrior) * 100).toFixed(2);
+                    const proportionReconstructed = ((unitsReconstructed / unitsDamaged) * 100).toFixed(2);
+
+                    const totalPopulationAffected = populationPerUnit * unitsDamaged;
+                    const populationBenefitedAfterReconstruction = populationPerUnit * unitsReconstructed;
+
+                    const totalDamageCost = unitCost * unitsDamaged; // Assuming full unit cost for damaged units
+                    let totalLossCost = 'N/A';
+
+                    // Check if Average Loss Per Day and Duration of Loss are provided
+                    if (avgLoss > 0 && lossDuration > 0) {
+                        totalLossCost = avgLoss * lossDuration;
+                    }
+
+                    const totalReconstructionCost = reconstructionCostPerUnit * unitsReconstructed;
+
+                    const categoryName = document.querySelector(`#category-${id} h3`)?.innerText;
+                    let [componentName, sectorNameText] = categoryName.split(" (");
+
+                    // Remove the closing parenthesis from sector name
+                    sectorNameText = sectorNameText?.replace(")", "") || categoryName;
+
+                    // Add to entries array for Summary Tables
+                    allEntries.push({
+                        category: sectorNameText,
+                        component: componentName,
+                        area: area,
+                        unitsPrior: unitsPrior,
+                        unitsDamaged: unitsDamaged,
+                        avgProportionDamaged: avgProportionDamaged,
+                        unitsReconstructed: unitsReconstructed,
+                        proportionReconstructed: proportionReconstructed,
+                        avgLostDays: avgLostDays,
+                        populationPerUnit: populationPerUnit,
+                        totalPopulationAffected: totalPopulationAffected,
+                        populationBenefitedAfterReconstruction: populationBenefitedAfterReconstruction,
+                        totalDamageCost: totalDamageCost,
+                        totalLossCost: totalLossCost,
+                        totalRecoveryCost: totalRecoveryCost,
+                        totalReconstructionCost: totalReconstructionCost
+                    });
+
+                    // Prepare data for Summary Table 2
+                    const key = componentName;
+
+                    if (!summaryData[key]) {
+                        summaryData[key] = {
+                            component: componentName,
+                            unitsDamaged: { Rural: 0, Urban: 0 },
+                            totalLossCost: { Rural: 0, Urban: 0 },
+                            totalRecoveryCost: { Rural: 0, Urban: 0 },
+                            totalReconstructionCost: { Rural: 0, Urban: 0 },
+                            totalPercentageDamage: { Rural: 0, Urban: 0 },
+                            totalUnitsDamaged: { Rural: 0, Urban: 0 }
+                        };
+                    }
+
+                    summaryData[key].unitsDamaged[area] += unitsDamaged;
+                    summaryData[key].totalUnitsDamaged[area] += unitsDamaged;
+
+                    if (totalLossCost !== 'N/A') {
+                        summaryData[key].totalLossCost[area] += totalLossCost;
+                    }
+
+                    summaryData[key].totalRecoveryCost[area] += totalRecoveryCost;
+                    summaryData[key].totalReconstructionCost[area] += totalReconstructionCost;
+
+                    // Accumulate weighted percentage damage
+                    summaryData[key].totalPercentageDamage[area] += (unitsDamaged / unitsPrior) * 100 * unitsDamaged;
+
+                    // Prepare data for Summary Table 3 (Sector-wise Totals)
+                    if (!sectorTotals[sectorNameText]) {
+                        sectorTotals[sectorNameText] = {
+                            totalDamage: 0,
+                            totalLoss: 0,
+                            totalRecovery: 0,
+                            totalReconstruction: 0
+                        };
+                    }
+
+                    sectorTotals[sectorNameText].totalDamage += totalDamageCost;
+                    if (totalLossCost !== 'N/A') {
+                        sectorTotals[sectorNameText].totalLoss += totalLossCost;
+                    }
+                    sectorTotals[sectorNameText].totalRecovery += totalRecoveryCost;
+                    sectorTotals[sectorNameText].totalReconstruction += totalReconstructionCost;
+
+                    // Prepare data for Summary Table 4 (Unit Cost Details)
+                    unitCostDetails.push({
+                        sector: sectorNameText,
+                        component: componentName,
+                        averageUnitCost: unitCost,
+                        source: unitCostSource
+                    });
+
+                    // Accumulate totals for the summary text
+                    totalDamageAll += totalDamageCost;
+                    if (totalLossCost !== 'N/A') {
+                        totalLossAll += totalLossCost;
+                    }
+                    totalRecoveryAll += totalRecoveryCost;
+                    totalReconstructionAll += totalReconstructionCost;
+                }
+            }
+
+            if (allInputsValid) {
+                // Update summary tables
+                updateSummaryTable1();
+                updateSummaryTable1Population();
+                updateSummaryTable2();
+                updateSummaryTable3();
+                updateSummaryTable4();
+                updateSummaryText(totalDamageAll, totalLossAll, totalRecoveryAll, totalReconstructionAll);
+                document.getElementById('result').style.display = 'block';
+                // Generate pie chart
+                generatePieChart();
+            } else {
+                alert('Please correct the highlighted errors before proceeding.');
+            }
+        }
+
+        function updateSummaryTable1() {
+            const tableBodyRural = document.querySelector("#summary-table-1-rural tbody");
+            const tableBodyUrban = document.querySelector("#summary-table-1-urban tbody");
+            tableBodyRural.innerHTML = '';  // Clear previous results
+            tableBodyUrban.innerHTML = '';
+
+            allEntries.forEach(entry => {
+                const row = `
+                    <tr>
+                        <td>${entry.category}</td>
+                        <td>${entry.component}</td>
+                        <td>${entry.unitsPrior}</td>
+                        <td>${entry.unitsDamaged}</td>
+                        <td>${entry.avgProportionDamaged}%</td>
+                        <td>${entry.unitsReconstructed}</td>
+                        <td>${entry.proportionReconstructed}%</td>
+                        <td>${entry.avgLostDays}</td>
+                    </tr>
+                `;
+
+                if (entry.area === 'Rural') {
+                    tableBodyRural.insertAdjacentHTML('beforeend', row);
+                } else {
+                    tableBodyUrban.insertAdjacentHTML('beforeend', row);
+                }
+            });
+        }
+
+        function updateSummaryTable1Population() {
+            const tableBodyRural = document.querySelector("#summary-table-1-population-rural tbody");
+            const tableBodyUrban = document.querySelector("#summary-table-1-population-urban tbody");
+            tableBodyRural.innerHTML = '';  // Clear previous results
+            tableBodyUrban.innerHTML = '';
+
+            allEntries.forEach(entry => {
+                const row = `
+                    <tr>
+                        <td>${entry.category}</td>
+                        <td>${entry.component}</td>
+                        <td>${entry.populationPerUnit}</td>
+                        <td>${entry.totalPopulationAffected}</td>
+                        <td>${entry.populationBenefitedAfterReconstruction}</td>
+                    </tr>
+                `;
+
+                if (entry.area === 'Rural') {
+                    tableBodyRural.insertAdjacentHTML('beforeend', row);
+                } else {
+                    tableBodyUrban.insertAdjacentHTML('beforeend', row);
+                }
+            });
+        }
+
+        function updateSummaryTable2() {
+            const tableBodyRural = document.querySelector("#summary-table-2-rural tbody");
+            const tableBodyUrban = document.querySelector("#summary-table-2-urban tbody");
+            tableBodyRural.innerHTML = '';  // Clear previous results
+            tableBodyUrban.innerHTML = '';
+
+            for (let key in summaryData) {
+                const data = summaryData[key];
+
+                // Calculate weighted average percentage damage for Rural
+                const avgPercentDamageRural = data.totalUnitsDamaged.Rural > 0 ? (data.totalPercentageDamage.Rural / data.totalUnitsDamaged.Rural).toFixed(2) : 0;
+
+                // Calculate weighted average percentage damage for Urban
+                const avgPercentDamageUrban = data.totalUnitsDamaged.Urban > 0 ? (data.totalPercentageDamage.Urban / data.totalUnitsDamaged.Urban).toFixed(2) : 0;
+
+                // Prepare row for Rural table if data exists
+                if (data.totalUnitsDamaged.Rural > 0) {
+                    const rowRural = `
+                        <tr>
+                            <td>${data.component}</td>
+                            <td>${data.unitsDamaged.Rural}</td>
+                            <td>${avgPercentDamageRural}%</td>
+                            <td>${data.totalLossCost.Rural > 0 ? '₹' + data.totalLossCost.Rural.toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A'}</td>
+                            <td>₹${data.totalRecoveryCost.Rural.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                            <td>₹${data.totalReconstructionCost.Rural.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        </tr>
+                    `;
+                    tableBodyRural.insertAdjacentHTML('beforeend', rowRural);
+                }
+
+                // Prepare row for Urban table if data exists
+                if (data.totalUnitsDamaged.Urban > 0) {
+                    const rowUrban = `
+                        <tr>
+                            <td>${data.component}</td>
+                            <td>${data.unitsDamaged.Urban}</td>
+                            <td>${avgPercentDamageUrban}%</td>
+                            <td>${data.totalLossCost.Urban > 0 ? '₹' + data.totalLossCost.Urban.toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A'}</td>
+                            <td>₹${data.totalRecoveryCost.Urban.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                            <td>₹${data.totalReconstructionCost.Urban.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        </tr>
+                    `;
+                    tableBodyUrban.insertAdjacentHTML('beforeend', rowUrban);
+                }
+            }
+        }
+
+        function updateSummaryTable3() {
+            const tableBody = document.querySelector("#summary-table-3 tbody");
+            tableBody.innerHTML = '';  // Clear previous results
+
+            for (let sector in sectorTotals) {
+                const data = sectorTotals[sector];
+                const row = `
+                    <tr>
+                        <td>${sector}</td>
+                        <td>₹${data.totalDamage.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        <td>₹${data.totalLoss.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        <td>₹${data.totalRecovery.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        <td>₹${data.totalReconstruction.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            }
+        }
+
+        function updateSummaryTable4() {
+            const tableBody = document.querySelector("#summary-table-4 tbody");
+            tableBody.innerHTML = '';  // Clear previous results
+
+            unitCostDetails.forEach(entry => {
+                const row = `
+                    <tr>
+                        <td>${entry.sector}</td>
+                        <td>${entry.component}</td>
+                        <td>₹${entry.averageUnitCost.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        <td>${entry.source}</td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        function updateSummaryText(totalDamage, totalLoss, totalRecovery, totalReconstruction) {
+            const summaryDiv = document.getElementById('summary-text');
+            summaryDiv.innerHTML = `
+                The total damage is ₹${totalDamage.toLocaleString('en-IN', {minimumFractionDigits: 2})}, 
+                the total loss is ₹${totalLoss.toLocaleString('en-IN', {minimumFractionDigits: 2})}, 
+                the total recovery cost is ₹${totalRecovery.toLocaleString('en-IN', {minimumFractionDigits: 2})}, 
+                and the total reconstruction cost is ₹${totalReconstruction.toLocaleString('en-IN', {minimumFractionDigits: 2})}.
+            `;
+        }
+
+        function generatePieChart() {
+            // Aggregate total damage cost per sector
+            const sectorData = {};
+            allEntries.forEach(entry => {
+                if (sectorData[entry.category]) {
+                    sectorData[entry.category] += entry.totalDamageCost;
+                } else {
+                    sectorData[entry.category] = entry.totalDamageCost;
+                }
+            });
+
+            // Prepare data for the chart
+            const labels = Object.keys(sectorData);
+            const data = Object.values(sectorData);
+
+            // Remove existing chart canvas if any
+            if (window.damageChartInstance) {
+                window.damageChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('damageChart').getContext('2d');
+            window.damageChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Damage Cost',
+                        data: data,
+                        backgroundColor: [
+                            '#007bff',
+                            '#28a745',
+                            '#dc3545',
+                            '#ffc107',
+                            '#17a2b8',
+                            '#6f42c1',
+                            '#fd7e14',
+                            '#6c757d',
+                            '#20c997',
+                            '#6610f2'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Total Damage Cost by Sector'
+                        }
+                    }
+                }
+            });
+        }
+
+       function exportToExcel(tableId, baseFilename) {
+    const district = document.getElementById('district').value || 'District';
+    
+    let filename;
+    let title;  // Store the exact table title
+
+    // Set filename and title based on tableId
+    if (tableId === 'summary-table-1-rural') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Rural.csv`;
+        title = `Summary Table 1.1: Baseline and Damage Analysis - ${district} (Rural)`;
+    } else if (tableId === 'summary-table-1-urban') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Urban.csv`;
+        title = `Summary Table 1.2: Baseline and Damage Analysis - ${district} (Urban)`;
+    } else if (tableId === 'summary-table-2-rural') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Rural.csv`;
+        title = `Summary Table 2.1: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Rural)`;
+    } else if (tableId === 'summary-table-2-urban') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}_Urban.csv`;
+        title = `Summary Table 2.2: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Urban)`;
+    } else if (tableId === 'summary-table-3') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}.csv`;
+        title = `Summary Table 3: Sector-wise Damage, Loss, Reconstruction and Recovery Needs - ${district}`;
+    } else if (tableId === 'summary-table-4') {
+        filename = `${baseFilename.replace('.csv', '')}_${district}.csv`;
+        title = `Summary Table 4: Sector Unit Cost Details - ${district}`;
+    } else {
+        title = `Summary Table for ${district}`;
+    }
+
+    let csvContent = '';
+    
+    // Add the title row at the top of the CSV file
+    csvContent += `${title}\r\n\r\n`;  // Add title with district and area type
+
+    // Extract rows from the table
+    const rows = document.querySelectorAll(`#${tableId} tr`);
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const rowData = [];
+        cols.forEach(col => {
+            let data = col.innerText.replace(/,/g, ''); // Remove commas to prevent CSV misalignment
+            rowData.push('"' + data + '"');
+        });
+        csvContent += rowData.join(',') + '\r\n';
+    });
+
+    // Create a blob and trigger a download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+       
+    </script>
+
+</body>
+</html>
