@@ -1,1208 +1,1534 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta tags and title -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A User Friendly Tool For Post Disaster Needs Estimation</title>
-    <!-- Updated CSS for improved interface -->
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
-            margin: 0;
-            padding: 0;
-        }
-        h1, h2 {
-            text-align: center;
-            color: #343a40;
-        }
-        h1 {
-            background-color: #007bff;
-            color: white;
-            padding: 20px 0;
-            margin: 0;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            padding: 30px 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .input-group {
-            margin-bottom: 25px;
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
-        }
-        .input-group label {
-            display: block;
-            font-weight: bold;
-            margin-top: 10px;
-            color: #495057;
-        }
-        .input-group select, .input-group input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-        }
-        .input-group input:invalid {
-            border-color: red;
-        }
-        .button {
-            margin-top: 30px;
-            width: 100%;
-            padding: 15px;
-            background-color: #28a745;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #218838;
-        }
-        .remove-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 10px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .remove-btn:hover {
-            background-color: #c82333;
-        }
-        .result {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #f1f3f5;
-            text-align: center;
-            border-radius: 6px;
-        }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-        table, th, td {
-            border: 1px solid #dee2e6;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            word-wrap: break-word;
-        }
-        th {
-            background-color: #343a40;
-            color: white;
-            font-weight: bold;
-        }
-        .error {
-            color: red;
-            font-size: 14px;
-            display: none;
-            margin-top: 10px;
-        }
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            .button {
-                font-size: 16px;
-            }
-            th, td {
-                padding: 8px;
-            }
-        }
-        /* Styles for export button */
-        .export-btn {
-            margin-top: 20px;
-            padding: 12px 20px;
-            background-color: #17a2b8;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .export-btn:hover {
-            background-color: #138496;
-        }
-        /* Styles for the summary text box */
-        .summary-text {
-            margin-top: 30px;
-            font-size: 18px;
-            color: #212529;
-        }
-    </style>
-
-       
-
-
-
-    <!-- Include Chart.js library -->
+    <title>National PDNA Framework - GOI</title>
+    <!-- Tailwind for Login & Dashboard UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- User's Original CSS (Scoped to PDNA-DCT) -->
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 0; }
+        
+        /* DCT Specific Styles */
+        #pdna-dct-view { background-color: #e9ecef; min-height: 100vh; padding-bottom: 50px; }
+        #pdna-dct-view h1, #pdna-dct-view h2 { text-align: center; color: #343a40; }
+        #pdna-dct-view h1 { background-color: #007bff; color: white; padding: 20px 0; margin: 0; }
+        #pdna-dct-view .container { max-width: 1100px; margin: 20px auto; background-color: #ffffff; padding: 30px 40px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 8px; }
+        #pdna-dct-view .input-group { margin-bottom: 25px; background-color: #f8f9fa; padding: 20px; border-radius: 6px; border: 1px solid #e2e8f0; transition: all 0.3s; }
+        #pdna-dct-view .input-group.discrepancy { border: 2px solid #ef4444; background-color: #fef2f2; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); }
+        #pdna-dct-view .input-group label { display: block; font-weight: bold; margin-top: 10px; color: #495057; font-size: 14px; }
+        #pdna-dct-view .input-group select, #pdna-dct-view .input-group input { width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        #pdna-dct-view .input-group input:invalid { border-color: red; }
+        #pdna-dct-view .button { margin-top: 30px; width: 100%; padding: 15px; background-color: #28a745; color: white; font-size: 18px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
+        #pdna-dct-view .button:hover { background-color: #218838; }
+        #pdna-dct-view .remove-btn { background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 10px; cursor: pointer; margin-top: 20px; }
+        #pdna-dct-view .remove-btn:hover { background-color: #c82333; }
+        #pdna-dct-view .result { margin-top: 40px; padding: 20px; background-color: #f1f3f5; text-align: center; border-radius: 6px; }
+        #pdna-dct-view table { width: 100%; margin-top: 20px; border-collapse: collapse; table-layout: fixed; }
+        #pdna-dct-view table, #pdna-dct-view th, #pdna-dct-view td { border: 1px solid #dee2e6; }
+        #pdna-dct-view th, #pdna-dct-view td { padding: 12px; text-align: center; word-wrap: break-word; font-size: 14px; }
+        #pdna-dct-view th { background-color: #343a40; color: white; font-weight: bold; }
+        #pdna-dct-view .error { color: red; font-size: 14px; display: none; margin-top: 10px; }
+        #pdna-dct-view .export-btn { margin-top: 20px; padding: 12px 20px; background-color: #17a2b8; color: white; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: inline-block; }
+        #pdna-dct-view .export-btn:hover { background-color: #138496; }
+        #pdna-dct-view .summary-text { margin-top: 30px; font-size: 18px; color: #212529; font-weight: bold;}
+        #pdna-dct-view .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        #pdna-dct-view .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; }
+        #pdna-dct-view .stat-string { font-size: 12px; color: #0c4a6e; background: #e0f2fe; padding: 10px; border-radius: 4px; margin-top: 15px; border-left: 4px solid #0284c7; }
+        #pdna-dct-view .warn-string { font-size: 13px; color: #b91c1c; background: #fee2e2; padding: 12px; border-radius: 4px; margin-top: 15px; border-left: 4px solid #dc2626; font-weight: bold; display: none; line-height: 1.5; }
+
+        /* General App Styles */
+        .btn-transition { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hidden { display: none !important; }
+        .modal-bg { background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+        
+        /* EVF Toggle Styles */
+        .evf-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: #059669; }
+    </style>
 </head>
 <body>
 
-    <h1>A User Friendly Tool For Post Disaster Needs Estimation</h1>
-    <div class="container">
-
-<!-- Assam District Dropdown -->
-<div class="input-group">
-    <label for="district">Select District</label>
-    <select id="district">
-        <option value="">Select District</option>
-        <option value="Baksa">Baksa</option>
-        <option value="Barpeta">Barpeta</option>
-        <option value="Biswanath">Biswanath</option>
-        <option value="Bongaigaon">Bongaigaon</option>
-        <option value="Cachar">Cachar</option>
-        <option value="Charaideo">Charaideo</option>
-        <option value="Chirang">Chirang</option>
-        <option value="Darrang">Darrang</option>
-        <option value="Dhemaji">Dhemaji</option>
-        <option value="Dhubri">Dhubri</option>
-        <option value="Dibrugarh">Dibrugarh</option>
-        <option value="Dima Hasao">Dima Hasao</option>
-        <option value="Goalpara">Goalpara</option>
-        <option value="Golaghat">Golaghat</option>
-        <option value="Hailakandi">Hailakandi</option>
-        <option value="Hojai">Hojai</option>
-        <option value="Jorhat">Jorhat</option>
-        <option value="Kamrup">Kamrup</option>
-        <option value="Kamrup Metropolitan">Kamrup Metropolitan</option>
-        <option value="Karbi Anglong">Karbi Anglong</option>
-        <option value="Karimganj">Karimganj</option>
-        <option value="Kokrajhar">Kokrajhar</option>
-        <option value="Lakhimpur">Lakhimpur</option>
-        <option value="Majuli">Majuli</option>
-        <option value="Morigaon">Morigaon</option>
-        <option value="Nagaon">Nagaon</option>
-        <option value="Nalbari">Nalbari</option>
-        <option value="Sivasagar">Sivasagar</option>
-        <option value="Sonitpur">Sonitpur</option>
-        <option value="South Salmara-Mankachar">South Salmara-Mankachar</option>
-        <option value="Tinsukia">Tinsukia</option>
-        <option value="Udalguri">Udalguri</option>
-        <option value="West Karbi Anglong">West Karbi Anglong</option>
-    </select>
-</div>
-
-        <h2>Select Sector and Component</h2>
-
-        <div class="input-group">
-            <label for="category">Select Sector</label>
-            <select id="category" onchange="loadComponents()">
-                <option value="">Select Sector</option>
-                <!-- Updated sector options -->
-                <option value="WASH (Water, Sanitation, and Hygiene)">WASH (Water, Sanitation, and Hygiene)</option>
-                <option value="Education">Education</option>
-                <option value="Health">Health</option>
-                <option value="Livestock & Agriculture">Livestock & Agriculture</option>
-                <option value="Local-Level Infrastructure">Local-Level Infrastructure</option>
-                <option value="Environment/Forests">Environment/Forests</option>
-                <option value="Energy & Utility Infrastructure">Energy & Utility Infrastructure</option>
-                <option value="Public Services and Other Infrastructure">Public Services and Other Infrastructure</option>
-                <option value="Housing Infrastructure">Housing Infrastructure</option>
-                <option value="Other">Other</option>
-            </select>
-            <div id="custom-sector-div" style="display:none;">
-                <label>Custom Sector Name</label>
-                <input type="text" id="custom-sector" placeholder="Enter custom sector name">
+    <!-- ========================================== -->
+    <!-- 1. LOGIN SCREEN -->
+    <!-- ========================================== -->
+    <div id="view-login" class="fixed inset-0 z-[100] bg-slate-900 flex items-center justify-center px-4">
+        <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-blue-800 p-8 text-center text-white">
+                <h1 class="text-2xl font-black uppercase tracking-tight" style="background:transparent; padding:0;">National PDNA Portal</h1>
+                <p class="text-blue-200 text-sm mt-2">Government of India</p>
             </div>
-        </div>
+            
+            <div class="p-8 space-y-6">
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Select Access Role</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <button onclick="setLoginRole('dct')" id="role-dct" class="py-3 border-2 rounded-xl text-sm font-bold btn-transition border-blue-600 text-blue-700 bg-blue-50">PDNA-DCT (Field)</button>
+                        <button onclick="setLoginRole('evf')" id="role-evf" class="py-3 border-2 rounded-xl text-sm font-bold btn-transition border-slate-200 text-slate-400">PDNA-EVF (Expert)</button>
+                        <button onclick="setLoginRole('dcm')" id="role-dcm" class="py-3 border-2 rounded-xl text-sm font-bold btn-transition border-slate-200 text-slate-400">PDNA-DCM (Policy)</button>
+                    </div>
+                </div>
 
-        <div class="input-group" id="component-group" style="display:none;">
-            <label for="component">Select Component</label>
-            <select id="component">
-                <!-- Dynamically filled components based on selected category -->
-            </select>
-            <div id="custom-component-div" style="display:none;">
-                <label>Custom Component Name</label>
-                <input type="text" id="custom-component-main" placeholder="Enter custom component name">
+                <div id="login-geo-section" class="space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase">State/UT</label>
+                        <select id="login-state" onchange="updateDistrictOptions()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase">District</label>
+                        <select id="login-district" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Official Email Address</label>
+                    <input type="email" id="login-email" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="officer@nic.in">
+                </div>
+
+                <button onclick="handleLogin()" class="w-full py-4 bg-blue-800 text-white font-bold rounded-xl shadow-lg hover:bg-blue-900 btn-transition">
+                    Authenticate & Enter
+                </button>
             </div>
-            <button class="button" onclick="addSector()">Add Component</button>
-        </div>
-
-        <div id="selected-sectors">
-            <!-- Dynamic sector input groups will be placed here -->
-        </div>
-
-        <button class="button" onclick="addToSummary()">Submit for Calculation</button>
-
-        <div id="result" class="result" style="display:none;">
-            <!-- New Summary Tables -->
-            <h3>Summary Table 1.1: Baseline and Damage Analysis - Rural</h3>
-            <table id="summary-table-1-rural">
-                <thead>
-                    <tr>
-                        <th>Sector</th>
-                        <th>Component</th>
-                        <th>Total Units Prior</th>
-                        <th>Total Units Damaged</th>
-                        <th>Avg. Proportion Damaged (%)</th>
-                        <th>Units to be Reconstructed</th>
-                        <th>Proportion to be Reconstructed (%)</th>
-                        <th>Avg. Lost Days Due to Disruption</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-1-rural', 'PDNA_Summary_Table_1_Rural.csv')">Export Summary Table 1.1 to Excel</button>
-
-            <h3 style="margin-top: 50px;">Summary Table 1.2: Baseline and Damage Analysis - Urban</h3>
-            <table id="summary-table-1-urban">
-                <thead>
-                    <tr>
-                        <th>Sector</th>
-                        <th>Component</th>
-                        <th>Total Units Prior</th>
-                        <th>Total Units Damaged</th>
-                        <th>Avg. Proportion Damaged (%)</th>
-                        <th>Units to be Reconstructed</th>
-                        <th>Proportion to be Reconstructed (%)</th>
-                        <th>Avg. Lost Days Due to Disruption</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-1-urban', 'PDNA_Summary_Table_1_Urban.csv')">Export Summary Table 1.2 to Excel</button>
-
-            <!-- New Population Tables -->
-            <h3 style="margin-top: 50px;">Summary Table 1.3: Population Analysis - Rural</h3>
-            <table id="summary-table-1-population-rural">
-                <thead>
-                    <tr>
-                        <th>Sector</th>
-                        <th>Component</th>
-                        <th>Population per Unit</th>
-                        <th>Total Population Affected</th>
-                        <th>Population Benefited After Reconstruction</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-1-population-rural', 'PDNA_Summary_Table_1.3_Rural.csv')">Export Summary Table 1.3 to Excel</button>
-
-            <h3 style="margin-top: 50px;">Summary Table 1.4: Population Analysis - Urban</h3>
-            <table id="summary-table-1-population-urban">
-                <thead>
-                    <tr>
-                        <th>Sector</th>
-                        <th>Component</th>
-                        <th>Population per Unit</th>
-                        <th>Total Population Affected</th>
-                        <th>Population Benefited After Reconstruction</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-1-population-urban', 'PDNA_Summary_Table_1.4_Urban.csv')">Export Summary Table 1.4 to Excel</button>
-
-            <!-- Existing Summary Tables -->
-            <h3 style="margin-top: 50px;">Summary Table 2.1: Component Analysis - Rural</h3>
-            <table id="summary-table-2-rural">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Total Units Damaged</th>
-                        <th>Avg. % Damage</th>
-                        <th>Total Loss Cost (₹)</th>
-                        <th>Total Recovery Cost (₹)</th>
-                        <th>Total Reconstruction Cost (₹)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-2-rural', 'PDNA_Summary_Table_2_Rural.csv')">Export Summary Table 2.1 to Excel</button>
-
-            <h3 style="margin-top: 50px;">Summary Table 2.2: Component Analysis - Urban</h3>
-            <table id="summary-table-2-urban">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Total Units Damaged</th>
-                        <th>Avg. % Damage</th>
-                        <th>Total Loss Cost (₹)</th>
-                        <th>Total Recovery Cost (₹)</th>
-                        <th>Total Reconstruction Cost (₹)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-2-urban', 'PDNA_Summary_Table_2_Urban.csv')">Export Summary Table 2.2 to Excel</button>
-
-            <!-- Summary Text Box -->
-            <div class="summary-text" id="summary-text">
-                <!-- Total amounts will be displayed here -->
-            </div>
-
-            <h3 style="margin-top: 50px;">Summary Table 3: Sector-wise Totals</h3>
-            <table id="summary-table-3">
-                <thead>
-                    <tr>
-                        <th>Sector</th>
-                        <th>Total Damage (₹)</th>
-                        <th>Total Loss (₹)</th>
-                        <th>Total Recovery Cost (₹)</th>
-                        <th>Total Reconstruction Cost (₹)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-3', 'PDNA_Summary_Table_3.csv')">Export Summary Table 3 to Excel</button>
-
-            <h3 style="margin-top: 50px;">Summary Table 4: Unit Cost Details</h3>
-            <table id="summary-table-4">
-                <thead>
-                    <tr>
-                        <th>Sector</th>
-                        <th>Component</th>
-                        <th>Average Unit Cost (₹)</th>
-                        <th>Source</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button class="export-btn" onclick="exportToExcel('summary-table-4', 'PDNA_Summary_Table_4.csv')">Export Summary Table 4 to Excel</button>
-
-            <!-- Pie Chart Container -->
-            <canvas id="damageChart" style="margin-top: 40px;"></canvas>
-
-            <!-- Attribution(Credits) -->
-            <p style="margin-top: 40px; font-style: italic;">
-                Tool designed and conceptualized by <a href="mailto:mukundaupadhyay@gmail.com">Mukunda Upadhyay</a>.
-                Connect with him on <a href="https://www.linkedin.com/in/mukunda-upadhyay-692351279/" target="_blank">LinkedIn</a>.
-            </p>
         </div>
     </div>
 
-    <script>
-        let categoryCount = 0;
-        let categoryIds = [];
-        // Updated components without "Number of units" suffixes
-        const components = {
-            "WASH (Water, Sanitation, and Hygiene)": [
-                "Piped Water Supply Scheme",
-                "Community Managed Sanitary Complex",
-                "Individual Household Toilets",
-                "Water Purification Plants",
-                "Wells",
-                "Tube Wells",
-                "Sanitation Pipelines",
-                "Waste Management Plants",
-                "Waste Bins",
-                "Wastewater Treatment Plants",
-                "Rainwater Harvesting Structures",
-                "Public Restrooms",
-                "Other"
+    <!-- ========================================== -->
+    <!-- 2. PDNA DATA COLLECTION TOOL (DCT) -->
+    <!-- ========================================== -->
+    <div id="pdna-dct-view" class="hidden">
+        <h1>PDNA Data Collection Tool (PDNA-DCT)</h1>
+        
+        <div class="bg-blue-900 text-white px-4 py-2 flex justify-between items-center max-w-[1100px] mx-auto mt-4 rounded-lg shadow">
+            <span class="font-bold" id="dct-geo-header">Assam - District Portal</span>
+            <button onclick="location.reload()" class="text-sm bg-red-600 px-3 py-1 rounded hover:bg-red-700">Logout</button>
+        </div>
+
+        <div class="container">
+            
+            <!-- Global Report Info -->
+            <div class="grid-2" style="background:#f8f9fa; padding:20px; border-radius:8px; border:1px solid #e2e8f0;">
+                <div style="margin-bottom:0;">
+                    <label style="font-weight:bold; color:#495057; display:block; margin-bottom:5px;">Assessment Reference Name</label>
+                    <input type="text" id="report-name" placeholder="e.g., Flood Phase 1 Block A" required style="width:100%; padding:10px; border:1px solid #ced4da; border-radius:4px; box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:0;">
+                    <label style="font-weight:bold; color:#495057; display:block; margin-bottom:5px;">Region Type</label>
+                    <select id="report-area" style="width:100%; padding:10px; border:1px solid #ced4da; border-radius:4px; box-sizing:border-box;">
+                        <option value="Rural">Rural</option>
+                        <option value="Urban">Urban</option>
+                    </select>
+                </div>
+            </div>
+
+            <h2 style="margin-top:40px;">Elementary Unit Selection</h2>
+
+            <div class="input-group">
+                <div class="grid-2">
+                    <div>
+                        <label>1. Select Sector</label>
+                        <select id="category" onchange="loadComponents()"></select>
+                    </div>
+                    <div>
+                        <label>2. Select Component</label>
+                        <select id="component" onchange="loadSubComponents()"></select>
+                    </div>
+                    <div>
+                        <label>3. Select Sub-Component</label>
+                        <select id="sub-component" onchange="loadBasicUnits()"></select>
+                    </div>
+                    <div>
+                        <label>4. Select Basic Unit</label>
+                        <select id="basic-unit"></select>
+                    </div>
+                </div>
+                <button class="button" style="background-color: #007bff;" onclick="addSector()">Add Elementary Unit to Assessment</button>
+            </div>
+
+            <div id="selected-sectors">
+                <!-- Dynamic forms injected here -->
+            </div>
+
+            <button class="button" onclick="addToSummary()">Calculate & Submit to National Cloud</button>
+
+            <!-- User's Original Result Container + Table 5 -->
+            <div id="result" class="result" style="display:none;">
+                
+                <h3>Summary Table 1.1: Baseline and Damage Analysis - Rural</h3>
+                <table id="summary-table-1-rural">
+                    <thead><tr><th>Sector</th><th>Component</th><th>Total Quantity Prior</th><th>Total Damaged Equivalent</th><th>Avg. Proportion Damaged (%)</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" onclick="exportToExcel('summary-table-1-rural', 'PDNA_Summary_1_Rural.csv')">Export Table 1.1</button>
+
+                <h3 style="margin-top: 50px;">Summary Table 1.2: Baseline and Damage Analysis - Urban</h3>
+                <table id="summary-table-1-urban">
+                    <thead><tr><th>Sector</th><th>Component</th><th>Total Quantity Prior</th><th>Total Damaged Equivalent</th><th>Avg. Proportion Damaged (%)</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" onclick="exportToExcel('summary-table-1-urban', 'PDNA_Summary_1_Urban.csv')">Export Table 1.2</button>
+
+                <h3 style="margin-top: 50px;">Summary Table 2.1: Component Analysis - Rural</h3>
+                <table id="summary-table-2-rural">
+                    <thead><tr><th>Component</th><th>Equivalent Physical Damage</th><th>Avg. % Damage</th><th>Total Reconstruction Cost (₹)</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" onclick="exportToExcel('summary-table-2-rural', 'PDNA_Summary_2_Rural.csv')">Export Table 2.1</button>
+
+                <h3 style="margin-top: 50px;">Summary Table 2.2: Component Analysis - Urban</h3>
+                <table id="summary-table-2-urban">
+                    <thead><tr><th>Component</th><th>Equivalent Physical Damage</th><th>Avg. % Damage</th><th>Total Reconstruction Cost (₹)</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" onclick="exportToExcel('summary-table-2-urban', 'PDNA_Summary_2_Urban.csv')">Export Table 2.2</button>
+
+                <div class="summary-text" id="summary-text"></div>
+
+                <h3 style="margin-top: 50px;">Summary Table 3: Sector-wise Totals</h3>
+                <table id="summary-table-3">
+                    <thead><tr><th>Sector</th><th>System Quant. Damage (₹)</th><th>Expert Adjustment (₹)</th><th>Final Reconstruction Cost (₹)</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" onclick="exportToExcel('summary-table-3', 'PDNA_Summary_3.csv')">Export Table 3</button>
+
+                <h3 style="margin-top: 50px;">Summary Table 4: Unit Cost Details</h3>
+                <table id="summary-table-4">
+                    <thead><tr><th>Sector</th><th>Component</th><th>Embedded Unit Cost (₹)</th><th>Source Reference</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" onclick="exportToExcel('summary-table-4', 'PDNA_Summary_4.csv')">Export Table 4</button>
+
+                <!-- TABLE 5 FOR HISTORICAL COMPARISON -->
+                <h3 style="margin-top: 50px; color:#b91c1c;">Summary Table 5: Historical vs. Current Asset Valuation</h3>
+                <p style="font-size:12px; color:#64748b; margin-bottom:10px;">Aggregated roll-up of total prior inventory valued at time of construction vs. present replacement cost.</p>
+                <table id="summary-table-5">
+                    <thead>
+                        <tr style="background-color: #b91c1c; color:white;">
+                            <th>Sector > Component</th>
+                            <th>Avg. Const. Year</th>
+                            <th>Original Historical Value (₹)</th>
+                            <th>Present Replacement Value (₹)</th>
+                            <th>Appreciation Delta</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button class="export-btn" style="background-color: #b91c1c;" onclick="exportToExcel('summary-table-5', 'PDNA_Summary_5_Historical.csv')">Export Table 5</button>
+
+                <canvas id="damageChart" style="margin-top: 40px; max-height: 400px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHALLENGE RATE MODAL (DCT) -->
+    <div id="challenge-modal" class="hidden fixed inset-0 z-[200] modal-bg flex items-center justify-center px-4">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">Challenge Unit Rate</h2>
+            <p class="text-sm text-slate-500 mb-6">Propose a new rate for <span id="challenge-unit-name" class="font-bold text-blue-600"></span>.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Original Embedded Rate (₹)</label>
+                    <div id="challenge-orig-rate" class="p-3 bg-slate-100 rounded border font-mono text-slate-600">0</div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Proposed Rate (₹)</label>
+                    <input type="number" id="challenge-prop-rate" class="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter new rate">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Justification / Proof</label>
+                    <textarea id="challenge-reason" class="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none h-24" placeholder="Explain local deviations, provide GO/SoR reference..."></textarea>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button onclick="document.getElementById('challenge-modal').classList.add('hidden')" class="flex-1 py-3 bg-slate-200 text-slate-700 font-bold rounded hover:bg-slate-300">Cancel</button>
+                <button onclick="submitChallenge()" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. DECISION MAKING DASHBOARD (DCM) -->
+    <!-- ========================================== -->
+    <div id="pdna-dcm-view" class="hidden min-h-screen bg-slate-50">
+        <nav class="bg-slate-900 text-white border-b border-slate-700 sticky top-0 z-50 shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <span class="font-black text-xl tracking-widest text-blue-400">PDNA-DCM</span>
+                    <span class="font-bold text-slate-300 text-sm border-l border-slate-600 pl-3">Decision Making Dashboard</span>
+                </div>
+                <div class="flex gap-4 items-center">
+                    <select id="dash-filter-state" onchange="processDCMData()" class="p-2 text-sm font-bold bg-slate-800 border-slate-600 rounded text-white outline-none">
+                        <option value="all">All India Overview</option>
+                    </select>
+                    <button onclick="location.reload()" class="bg-red-600 px-4 py-2 rounded font-bold text-sm hover:bg-red-700 btn-transition">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <!-- DCM TABS -->
+            <div class="flex gap-6 mb-6 border-b border-slate-200 overflow-x-auto">
+                <button onclick="switchDcmTab('analytics')" id="tab-analytics" class="font-bold text-blue-600 border-b-2 border-blue-600 pb-2 transition-colors whitespace-nowrap">Analytics Dashboard</button>
+                <button onclick="switchDcmTab('master-tables')" id="tab-master-tables" class="font-bold text-slate-500 pb-2 hover:text-blue-600 transition-colors flex items-center gap-2 whitespace-nowrap">
+                    Master Database
+                </button>
+                <button onclick="switchDcmTab('validity')" id="tab-validity" class="font-bold text-slate-500 pb-2 hover:text-red-600 transition-colors flex items-center gap-2 whitespace-nowrap">
+                    Data Validity & Anomalies
+                    <span id="anomaly-badge" class="bg-red-500 text-white rounded-full px-2 py-0.5 text-[10px]">0</span>
+                </button>
+                <button onclick="switchDcmTab('approvals')" id="tab-approvals" class="font-bold text-slate-500 pb-2 hover:text-blue-500 transition-colors flex items-center gap-2 whitespace-nowrap">
+                    Rate Approvals 
+                    <span id="pending-badge" class="bg-orange-500 text-white rounded-full px-2 py-0.5 text-[10px]">0</span>
+                </button>
+                <button onclick="switchDcmTab('evf-insights')" id="tab-evf-insights" class="font-bold text-slate-500 pb-2 hover:text-emerald-600 transition-colors flex items-center gap-2 whitespace-nowrap">
+                    Expert Validation Insights (EVF)
+                </button>
+            </div>
+
+            <!-- ANALYTICS TAB -->
+            <div id="dcm-tab-analytics">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200 border-l-4 border-l-blue-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Sys Damage (₹)</p>
+                        <h2 id="dcm-kpi-quant" class="text-2xl font-black text-slate-800">₹0</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200 border-l-4 border-l-purple-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Expert Adjustments (₹)</p>
+                        <h2 id="dcm-kpi-expert" class="text-2xl font-black text-purple-700">₹0</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200 border-l-4 border-l-red-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Recovery Need (₹)</p>
+                        <h2 id="dcm-kpi-recovery" class="text-2xl font-black text-red-600">₹0</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200 border-l-4 border-l-emerald-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Verified Submissions</p>
+                        <h2 id="dcm-kpi-reports" class="text-2xl font-black text-emerald-700">0</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4">Fiscal Need by Geography</h3>
+                        <div style="position: relative; height: 300px;"><canvas id="dcmBarChart"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4">Damage Distribution by Sector</h3>
+                        <div style="position: relative; height: 300px;"><canvas id="dcmPieChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTRALIZED MASTER TABLES TAB -->
+            <div id="dcm-tab-master-tables" class="hidden">
+                <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-slate-700">Centralized Master Database</h3>
+                            <p class="text-xs text-slate-500 mt-1">Aggregated raw data spanning all districts and sectors.</p>
+                        </div>
+                        <button onclick="exportNationalData()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-bold shadow-sm btn-transition">Download CSV Export</button>
+                    </div>
+                    <div class="overflow-x-auto max-h-[600px]">
+                        <table class="w-full text-xs text-left" id="dcm-master-table">
+                            <thead class="bg-slate-100 text-slate-600 font-bold sticky top-0 shadow-sm">
+                                <tr>
+                                    <th class="p-3">State</th><th class="p-3">District</th><th class="p-3">Area</th>
+                                    <th class="p-3">Sector</th><th class="p-3">Component</th><th class="p-3">Basic Unit</th>
+                                    <th class="p-3">Prior Qty</th><th class="p-3">Damaged Qty</th><th class="p-3">% Damaged</th>
+                                    <th class="p-3">Quant. Est (₹)</th><th class="p-3">Expert Adj (₹)</th><th class="p-3 bg-blue-50">Total Need (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 bg-white" id="dcm-master-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATA VALIDITY & ANOMALIES TAB -->
+            <div id="dcm-tab-validity" class="hidden">
+                <div class="bg-white rounded-xl shadow border border-red-200 overflow-hidden">
+                    <div class="p-4 bg-red-50 border-b border-red-200">
+                        <h3 class="font-bold text-red-800">Flagged Anomalies: Physical Constraints Violated</h3>
+                        <p class="text-xs text-red-600 mt-1">Districts where the entered damaged quantities exceed the physical baseline, or where physical area ratios contradict the selected severity weight.</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-white text-slate-600 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-4">District</th>
+                                    <th class="p-4">Report Reference</th>
+                                    <th class="p-4">Unit Flagged</th>
+                                    <th class="p-4">Issue Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dcm-anomalies-table" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RATE APPROVALS TAB -->
+            <div id="dcm-tab-approvals" class="hidden">
+                <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200"><h3 class="font-bold text-slate-700">Pending Field Rate Challenges</h3></div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-4">District</th>
+                                    <th class="p-4">Elementary Unit</th>
+                                    <th class="p-4">Embedded Rate</th>
+                                    <th class="p-4 text-orange-600">Proposed Rate</th>
+                                    <th class="p-4">Justification</th>
+                                    <th class="p-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dcm-challenges-table" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVF INSIGHTS TAB -->
+            <div id="dcm-tab-evf-insights" class="hidden">
+                <div class="bg-white rounded-xl shadow border border-emerald-200 overflow-hidden">
+                    <div class="p-4 bg-emerald-50 border-b border-emerald-200 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-emerald-800">ML-Generated Policy Insights from Expert Validations</h3>
+                            <p class="text-xs text-emerald-600 mt-1">Automated qualitative analysis based on ground-truth observations.</p>
+                        </div>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 gap-6" id="dcm-evf-reports-container">
+                        <!-- EVF Reports injected here -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4. EXPERT VALIDATION FORM (EVF) -->
+    <!-- ========================================== -->
+    <div id="pdna-evf-view" class="hidden min-h-screen bg-slate-50">
+        <nav class="bg-emerald-900 text-white border-b border-emerald-700 sticky top-0 z-50 shadow-lg">
+            <div class="max-w-4xl mx-auto px-4 flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <span class="font-black text-xl tracking-widest text-emerald-400">PDNA-EVF</span>
+                    <span class="font-bold text-slate-300 text-sm border-l border-slate-600 pl-3" id="evf-geo-header">Expert Validation</span>
+                </div>
+                <button onclick="location.reload()" class="bg-red-600 px-4 py-2 rounded font-bold text-sm hover:bg-red-700 btn-transition">Logout</button>
+            </div>
+        </nav>
+
+        <main class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 mb-8">
+                <h2 class="text-2xl font-black text-slate-800 mb-6">Field Observation Record</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Location / Site Name</label>
+                        <input type="text" id="evf-site-name" class="w-full p-3 border rounded focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. Govt Primary School, Ward 4">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">GPS Coordinates</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="evf-gps" class="w-full p-3 border rounded bg-slate-50 text-slate-600 font-mono text-sm" readonly placeholder="Not captured">
+                            <button onclick="getGPSLocation()" class="bg-blue-100 text-blue-700 px-4 rounded font-bold hover:bg-blue-200 whitespace-nowrap">📍 Get GPS</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="evf-categories-container" class="space-y-6">
+                    <!-- Categories generated dynamically -->
+                </div>
+
+                <div class="mt-10 border-t pt-8 flex justify-center">
+                    <button onclick="submitEVF()" id="evf-submit-btn" class="px-12 py-4 bg-emerald-700 text-white font-black text-lg rounded-xl shadow-lg hover:bg-emerald-800 btn-transition flex items-center gap-3">
+                        Submit & Generate ML Insight
+                        <span id="evf-spinner" class="hidden animate-spin">⏳</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ML REPORT MODAL -->
+    <div id="ml-insight-modal" class="hidden fixed inset-0 z-[200] modal-bg flex items-center justify-center px-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b pb-4">
+                <div>
+                    <h2 class="text-xl font-black text-slate-800 flex items-center gap-2">🤖 ML Policy Insight Generated</h2>
+                    <p class="text-xs text-slate-500 mt-1">Based on expert qualitative field validation.</p>
+                </div>
+                <button onclick="document.getElementById('ml-insight-modal').classList.add('hidden'); switchView('login'); location.reload();" class="text-slate-400 hover:text-red-500 text-2xl font-black">×</button>
+            </div>
+            <div class="overflow-y-auto pr-2 space-y-4 text-sm text-slate-700 leading-relaxed" id="ml-insight-content">
+                <!-- Insight Content -->
+            </div>
+            <div class="mt-6 pt-4 border-t flex justify-end">
+                <button onclick="document.getElementById('ml-insight-modal').classList.add('hidden'); switchView('login'); location.reload();" class="px-6 py-2 bg-slate-900 text-white font-bold rounded-lg hover:bg-black">Acknowledge & Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ========================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, addDoc, onSnapshot, query, deleteDoc, Timestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // FIREBASE SETUP
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'india-pdna-v16-masterdb';
+
+        // 4-TIER ENGINEERING DATA & SoR
+        const ENGINEERING_MAP = {
+            "Education": {
+                "Primary School": {
+                    "Building": ["Walls (Brick)", "Floors (Vitrified)", "Pillars (RCC)", "Stairs (CC)", "Roof (RCC)"],
+                    "Premises": ["Playground Leveling", "Kitchen Shed", "Boundary Wall"]
+                }
+            },
+            "WASH": {
+                "Piped Water Supply": {
+                    "Network": ["DI Pipe", "HDPE Pipe"],
+                    "Infrastructure": ["Pump House", "Water Purification Plant"]
+                },
+                "Sanitation": {
+                    "Facilities": ["Community Sanitary Complex", "Individual Toilet"]
+                }
+            },
+            "Health": {
+                "Primary Health Center": {
+                    "Infrastructure": ["Walls (Brick)", "Floors (Sterile)", "Roof (RCC)"],
+                    "Utilities": ["Oxygen Lines", "Backup Generator"]
+                }
+            },
+            "Housing": {
+                "Pucca": { "Structure": ["RCC Roof", "Brick Walls"] },
+                "Kutcha": { "Structure": ["Thatch Roof", "Mud Walls"] }
+            },
+            "Agriculture & Livestock": {
+                "Crops": { "Kharif": ["Paddy", "Maize"], "Rabi": ["Wheat"] },
+                "Livestock": { "Animals": ["Cows", "Poultry"], "Structures": ["Cattle Shed"] }
+            }
+        };
+
+        const SOR_UNIT_RATES = {
+            "Walls (Brick)": { rate: 1600, unit: "SqM", ref: "CPWD DSR 2021 Item 6.1.1" },
+            "Floors (Vitrified)": { rate: 1250, unit: "SqM", ref: "CPWD DSR 2021 Item 11.41" },
+            "Pillars (RCC)": { rate: 15000, unit: "CuM", ref: "CPWD DSR 2021 Item 5.1.2" },
+            "Stairs (CC)": { rate: 8500, unit: "CuM", ref: "CPWD DSR 2021 Item 5.1.3" },
+            "Roof (RCC)": { rate: 3500, unit: "SqM", ref: "CPWD DSR 2021 Item 5.1" },
+            "Boundary Wall": { rate: 4500, unit: "RM", ref: "State PWD SoR 2022" },
+            "DI Pipe": { rate: 1250, unit: "RM", ref: "JJM SoR 2022" },
+            "HDPE Pipe": { rate: 350, unit: "RM", ref: "JJM SoR 2022" },
+            "Community Sanitary Complex": { rate: 350000, unit: "No.", ref: "SBM Gramin Guidelines" },
+            "Individual Toilet": { rate: 12000, unit: "No.", ref: "SBM Unit Cost" },
+            "Backup Generator": { rate: 250000, unit: "No.", ref: "Medical Infra Norms" },
+            "Oxygen Lines": { rate: 1200, unit: "RM", ref: "Medical Infra Norms" },
+            "Paddy": { rate: 17000, unit: "Hectare", ref: "SDRF Crop Norms" },
+            "Mud Walls": { rate: 300, unit: "SqM", ref: "SDRF Housing Relief" }
+        };
+
+        const STATE_DATA = {
+            "Assam": ["Baksa", "Barpeta", "Cachar", "Dhubri", "Kamrup", "Nagaon", "Sonitpur"],
+            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur"],
+            "Odisha": ["Puri", "Cuttack", "Balasore", "Ganjam"],
+            "West Bengal": ["Kolkata", "Howrah", "Darjeeling"]
+        };
+
+        // EVF QUALITATIVE OBSERVATIONS
+        const EVF_OBSERVATIONS = {
+            "A. Housing / Structural Unit": [
+                { code: "H1", text: "Diagonal shear crack present in load-bearing wall" }, { code: "H2", text: "Vertical crack > 2mm width" },
+                { code: "H3", text: "Foundation scouring visible" }, { code: "H4", text: "Structural tilt > 5°" },
+                { code: "H5", text: "Roof sheet uplifted" }, { code: "H6", text: "Column–beam joint crack" },
+                { code: "H7", text: "Plinth erosion present" }, { code: "H8", text: "Floor settlement visible" },
+                { code: "H9", text: "Watermark on internal wall" }, { code: "H10", text: "Door/window frame distortion" },
+                { code: "H11", text: "Roofing collapse (partial)" }, { code: "H12", text: "Roofing collapse (total)" },
+                { code: "H13", text: "Wall out-of-plane displacement" }, { code: "H14", text: "Rebar exposed" },
+                { code: "H15", text: "Foundation crack visible" }
             ],
-            "Education": [
-                "Primary Schools",
-                "Secondary Schools",
-                "Non-Formal Schools",
-                "Public Libraries",
-                "Community Centers",
-                "Other"
+            "B. Transport Infrastructure": [
+                { code: "T1", text: "Pavement surface stripped" }, { code: "T2", text: "Embankment erosion" },
+                { code: "T3", text: "Road inundated > 24 hrs" }, { code: "T4", text: "Culvert blocked" },
+                { code: "T5", text: "Culvert collapsed" }, { code: "T6", text: "Bridge deck misaligned" },
+                { code: "T7", text: "Bridge pier exposed" }, { code: "T8", text: "Landslide debris on road" },
+                { code: "T9", text: "Road shoulder collapse" }, { code: "T10", text: "Access route impassable" }
             ],
-            "Health": [
-                "Primary Health Centers",
-                "Community Health Centers",
-                "Sub Centers",
-                "Ambulances",
-                "Fire Hydrants",
-                "Disaster Shelters",
-                "Other"
+            "C. Agriculture": [
+                { code: "A1", text: "Crop lodging observed" }, { code: "A2", text: "Standing water present" },
+                { code: "A3", text: "Silt deposition > 2cm" }, { code: "A4", text: "Topsoil erosion" },
+                { code: "A5", text: "Irrigation canal breach" }, { code: "A6", text: "Irrigation inlet blocked" },
+                { code: "A7", text: "Crop rot present" }, { code: "A8", text: "Field debris accumulation" },
+                { code: "A9", text: "Livestock mortality evidence" }, { code: "A10", text: "Seed stock loss" }
             ],
-            "Livestock & Agriculture": [
-                "Hen",
-                "Duck",
-                "Cows",
-                "Buffaloes",
-                "Others (Livestock)",
-                "Livestock Shelters",
-                "Agricultural Land",
-                "Fishing Ponds",
-                "Irrigation Pumps",
-                "Farm Equipment",
-                "Dairy Farms",
-                "Poultry Farms",
-                "Greenhouses",
-                "Grain Storage Silos",
-                "Livestock Feed Storage",
-                "Cattle Sheds",
-                "Other"
+            "D. WASH": [
+                { code: "W1", text: "Handpump submerged" }, { code: "W2", text: "Turbid water discharge" },
+                { code: "W3", text: "Latrine pit overflow" }, { code: "W4", text: "Toilet slab damaged" },
+                { code: "W5", text: "Pipeline leakage" }, { code: "W6", text: "Pipeline exposed" },
+                { code: "W7", text: "Chlorination absent" }, { code: "W8", text: "Open defecation increase" },
+                { code: "W9", text: "Water storage contaminated" }, { code: "W10", text: "Drainage blocked" }
             ],
-            "Local-Level Infrastructure": [
-                "Community Roads",
-                "Bridges",
-                "Culverts",
-                "Train Tracks",
-                "Kutcha Houses",
-                "Concrete Houses",
-                "Semi Pucca Houses",
-                "Community Halls",
-                "Streetlights",
-                "Electric Poles",
-                "Markets",
-                "Check Dams",
-                "Footpaths",
-                "Traffic Signals",
-                "Traffic Signs",
-                "Bus Terminals",
-                "Railway Stations",
-                "Parking Lots",
-                "Ports and Harbors",
-                "Boats",
-                "Docks and Jetties",
-                "Solar Panels",
-                "Fire Stations",
-                "Police Stations",
-                "Prisons",
-                "Shopping Malls",
-                "Power Substations",
-                "Flood Embankments",
-                "Community Gardens",
-                "Landfill Sites",
-                "Harbor Cranes",
-                "Helipads",
-                "Meteorological Stations",
-                "Flood Warning Systems",
-                "Traffic Control Towers",
-                "Other"
+            "E. Health / Education": [
+                { code: "S1", text: "Building unsafe for occupancy" }, { code: "S2", text: "Bed capacity reduced" },
+                { code: "S3", text: "Classroom unusable" }, { code: "S4", text: "Medicine stock loss" },
+                { code: "S5", text: "Power outage > 48 hrs" }, { code: "S6", text: "Sanitation unit damaged" },
+                { code: "S7", text: "Equipment loss" }, { code: "S8", text: "Staff absenteeism" },
+                { code: "S9", text: "Facility flooded" }, { code: "S10", text: "Temporary relocation" }
             ],
-            "Environment/Forests": [
-                "Trees",
-                "Lakes and Waterbodies",
-                "Forest and Protected Areas",
-                "Public Parks",
-                "Fruit Orchards",
-                "Other"
-            ],
-            "Energy & Utility Infrastructure": [
-                "Electricity Grid",
-                "Wind Turbines",
-                "Gas Pipelines",
-                "Oil Pipelines",
-                "Water Pumps",
-                "Electric Transformers",
-                "Reservoirs",
-                "Power Stations",
-                "Other"
-            ],
-            "Public Services and Other Infrastructure": [
-                "Community Kitchens",
-                "Airports",
-                "Fire Trucks",
-                "Boats for Emergency Response",
-                "Markets (Stalls)",
-                "Crematoriums",
-                "Religious Structures",
-                "Community Radio Stations",
-                "Other"
-            ],
-              "Housing Infrastructure": [
-                "Pucca House",
-                "Kutcha House",
-                "Sem-Pucca House",
-                "Toilets",
-                "Sheds",
-                "Household Parking space",
-                "Retaining Wall",
-                "Any other structure not listed"
+            "F. Displacement / Shelter": [
+                { code: "D1", text: "Temporary shelter present" }, { code: "D2", text: "Overcrowding observed" },
+                { code: "D3", text: "Shelter leakage" }, { code: "D4", text: "No privacy partition" },
+                { code: "D5", text: "Return migration absent" }, { code: "D6", text: "Informal settlement formed" },
+                { code: "D7", text: "Tenure insecurity" }, { code: "D8", text: "Camp sanitation inadequate" },
+                { code: "D9", text: "Drinking water shortage" }, { code: "D10", text: "Cooking facility absent" }
             ]
         };
 
-        function loadComponents() {
-            const category = document.getElementById('category').value;
-            const componentSelect = document.getElementById('component');
-            const componentGroup = document.getElementById('component-group');
-            const customSectorDiv = document.getElementById('custom-sector-div');
-            const customComponentDiv = document.getElementById('custom-component-div');
-            componentSelect.innerHTML = '';
+        let appState = {
+            role: 'dct', state: '', district: '', currentUser: null,
+            cloudReports: [], challenges: [], evfReports: [], customRates: {},
+            dcmCharts: { bar: null, pie: null }
+        };
 
-            if (category) {
-                if (category === 'Other') {
-                    customSectorDiv.style.display = 'block';
-                    componentGroup.style.display = 'block';
-                    componentSelect.style.display = 'none';
-                    customComponentDiv.style.display = 'block';
-                } else {
-                    customSectorDiv.style.display = 'none';
-                    componentSelect.style.display = 'block';
-                    customComponentDiv.style.display = 'none';
+        // DCT FORM STATE
+        window.categoryCount = 0;
+        window.categoryIds = [];
+        window.allEntries = [];
 
-                    if (components[category]) {
-                        const defaultOption = document.createElement('option');
-                        defaultOption.value = '';
-                        defaultOption.text = 'Select Component';
-                        componentSelect.add(defaultOption);
-
-                        components[category].forEach(comp => {
-                            const option = document.createElement('option');
-                            option.value = comp;
-                            option.text = comp;
-                            componentSelect.add(option);
-                        });
-                        componentGroup.style.display = 'block';
-                    } else {
-                        componentGroup.style.display = 'none';
-                    }
-                }
-            } else {
-                componentGroup.style.display = 'none';
-                customSectorDiv.style.display = 'none';
-            }
-        }
-
-        function addSector() {
-            const category = document.getElementById('category').value;
-            const componentSelect = document.getElementById('component');
-            let component = componentSelect.value;
-            const customSectorName = document.getElementById('custom-sector').value;
-            const customComponentNameMain = document.getElementById('custom-component-main').value;
-
-            if (category) {
-                if (category === 'Other') {
-                    if (!customSectorName || !customComponentNameMain) {
-                        alert('Please enter custom sector and component names.');
-                        return;
-                    }
-                } else if (component === 'Other') {
-                    if (!customComponentNameMain) {
-                        alert('Please enter a custom component name.');
-                        return;
-                    }
-                } else if (!component) {
-                    alert('Please select a component.');
-                    return;
-                }
-
-                categoryCount++;
-                let id = categoryCount;
-                categoryIds.push(id);
-                createCategoryInputs(category, component, id, customSectorName, customComponentNameMain);
-            }
-        }
-
-        function createCategoryInputs(category, component, id, customSectorName = '', customComponentNameMain = '') {
-            let sectorName = category;
-            let componentName = component;
-
-            if (category === 'Other') {
-                sectorName = customSectorName || 'Other Sector';
-                componentName = customComponentNameMain || 'Custom Component';
-            } else if (component === 'Other') {
-                componentName = customComponentNameMain || 'Custom Component';
-            }
-
-            const sectorDiv = document.createElement('div');
-            sectorDiv.classList.add('input-group');
-            sectorDiv.setAttribute('id', `category-${id}`);
-            sectorDiv.innerHTML = `
-                <h3>${componentName} (${sectorName})</h3>
-                
-                <label>Area</label>
-                <select id="area-${id}">
-                    <option value="Rural">Rural</option>
-                    <option value="Urban">Urban</option>
-                </select>
-
-                <label>Total Number of Units Prior to Disaster</label>
-                <input type="number" id="units-prior-${id}" placeholder="Enter total units prior to disaster" min="0" step="0.01" required>
-
-                <label>Total Units Damaged</label>
-                <input type="number" id="units-damaged-${id}" placeholder="Enter total units damaged" min="0" step="0.01" required>
-
-                <label>Number of Units to be Reconstructed</label>
-                <input type="number" id="units-reconstructed-${id}" placeholder="Enter number of units to be reconstructed" min="0" step="0.01" required>
-
-                <label>Average Lost Days Due to Service Disruption</label>
-                <input type="number" id="average-lost-days-${id}" placeholder="Enter average lost days" min="0" step="0.01" required>
-
-                <label>Population Served per Unit</label>
-                <input type="number" id="population-per-unit-${id}" placeholder="Enter population served per unit" min="0" step="1" required>
-
-                <label>Average Unit Cost</label>
-                <div>
-                    <input type="radio" name="unit-cost-option-${id}" value="norms" onchange="showUnitCostOption(${id})" required> As per Norms
-                    <input type="radio" name="unit-cost-option-${id}" value="actuals" onchange="showUnitCostOption(${id})"> As per Actuals
-                    <input type="radio" name="unit-cost-option-${id}" value="other" onchange="showUnitCostOption(${id})"> Other
-                </div>
-
-                <div id="unit-cost-norms-${id}" style="display:none;">
-                    <label>Average Unit Cost (₹) as per Norms</label>
-                    <input type="number" id="unit-cost-value-norms-${id}" placeholder="Enter unit cost" min="0" step="0.01">
-                    <label>Source (e.g., SDRF norms)</label>
-                    <input type="text" id="unit-cost-source-norms-${id}" placeholder="Enter source">
-                </div>
-
-                <div id="unit-cost-actuals-${id}" style="display:none;">
-                    <label>Average Unit Cost (₹) as per Actuals</label>
-                    <input type="number" id="unit-cost-value-actuals-${id}" placeholder="Enter unit cost" min="0" step="0.01">
-                </div>
-
-                <div id="unit-cost-other-${id}" style="display:none;">
-                    <label>Average Unit Cost (₹) - Other</label>
-                    <input type="number" id="unit-cost-value-other-${id}" placeholder="Enter unit cost" min="0" step="0.01">
-                    <label>Source</label>
-                    <input type="text" id="unit-cost-source-other-${id}" placeholder="Enter source">
-                </div>
-
-                <label>Average Loss Per Day (₹) <span style="font-weight: normal; color: #6c757d;" title="Optional">[If it is difficult to quantify loss faced within this component in monetary terms you may skip]</span></label>
-                <input type="number" id="average-loss-${id}" placeholder="Enter average loss per day" min="0" step="0.01">
-
-                <label>Duration of Loss (Days)</label>
-                <input type="number" id="loss-duration-${id}" placeholder="Enter duration of loss" min="0" step="0.01">
-
-                <label>Total Recovery Cost (₹)</label>
-                <input type="number" id="total-recovery-cost-${id}" placeholder="Enter total recovery cost" min="0" step="0.01" required>
-
-                <label>Reconstruction Cost Per Unit (₹)</label>
-                <input type="number" id="reconstruction-cost-unit-${id}" placeholder="Enter reconstruction cost per unit" min="0" step="0.01" required>
-
-                <div class="error" id="error-${id}">Please fill out all required fields correctly.</div>
-                <button class="remove-btn" onclick="removeCategory(${id})">Remove Component</button>
-            `;
+        // INIT
+        window.onload = () => {
+            const ls = document.getElementById('login-state');
+            const dfs = document.getElementById('dash-filter-state');
+            Object.keys(STATE_DATA).sort().forEach(s => {
+                ls.add(new Option(s, s));
+                dfs.add(new Option(s, s));
+            });
+            window.updateDistrictOptions();
             
-            document.getElementById('selected-sectors').appendChild(sectorDiv);
-        }
+            const cat = document.getElementById('category');
+            cat.add(new Option("Select Sector", ""));
+            Object.keys(ENGINEERING_MAP).forEach(s => cat.add(new Option(s, s)));
 
-        function showUnitCostOption(id) {
-            const selectedOption = document.querySelector(`input[name="unit-cost-option-${id}"]:checked`).value;
+            initFirebase();
+        };
 
-            // Hide all unit cost input sections
-            document.getElementById(`unit-cost-norms-${id}`).style.display = 'none';
-            document.getElementById(`unit-cost-actuals-${id}`).style.display = 'none';
-            document.getElementById(`unit-cost-other-${id}`).style.display = 'none';
+        const initFirebase = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else { await signInAnonymously(auth); }
+        };
 
-            // Show the selected unit cost input section
-            if (selectedOption === 'norms') {
-                document.getElementById(`unit-cost-norms-${id}`).style.display = 'block';
-            } else if (selectedOption === 'actuals') {
-                document.getElementById(`unit-cost-actuals-${id}`).style.display = 'block';
-            } else if (selectedOption === 'other') {
-                document.getElementById(`unit-cost-other-${id}`).style.display = 'block';
-            }
-        }
+        onAuthStateChanged(auth, (user) => {
+            appState.currentUser = user;
+            if (user) {
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), (snap) => {
+                    appState.cloudReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    if (!document.getElementById('pdna-dcm-view').classList.contains('hidden')) {
+                        window.processDCMData();
+                    }
+                });
 
-        function removeCategory(id) {
-            const categoryDiv = document.getElementById(`category-${id}`);
-            if (categoryDiv) {
-                categoryDiv.remove();
-                // Remove the id from categoryIds array
-                categoryIds = categoryIds.filter(catId => catId !== id);
-            }
-        }
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'evf_reports'), (snap) => {
+                    appState.evfReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    if (!document.getElementById('pdna-dcm-view').classList.contains('hidden')) {
+                        window.renderEVFInsights();
+                    }
+                });
 
-        // Store all submissions in an array to keep track of multiple entries
-        let allEntries = [];
-        let summaryData = {}; // For Summary Tables
-        let sectorTotals = {}; // For Summary Table 3
-        let unitCostDetails = []; // For Summary Table 4
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'rate_challenges'), (snap) => {
+                    appState.challenges = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    appState.customRates = {};
+                    appState.challenges.forEach(c => {
+                        if (c.district === appState.district && c.status === 'approved') {
+                            appState.customRates[c.unit] = c.proposedRate;
+                        }
+                    });
 
-        function addToSummary() {
-    // Add district selection logic at the top
-    const district = document.getElementById('district').value;
-    if (!district) {
-        alert('Please select a district.');
-        return;
-    }
-
-    // Update the summary titles to include the district
-    document.querySelectorAll('h3').forEach((h3) => {
-        if (h3.textContent.includes('Summary Table')) {
-            h3.innerText = h3.textContent.split(':')[0] + `: ${district}`;
-        }
-    });
-            let allInputsValid = true;
-            allEntries = []; // Reset entries to prevent duplicates
-            summaryData = {}; // Reset summary data
-            sectorTotals = {}; // Reset sector totals
-            unitCostDetails = []; // Reset unit cost details
-
-            let totalDamageAll = 0;
-            let totalLossAll = 0;
-            let totalRecoveryAll = 0;
-            let totalReconstructionAll = 0;
-
-            for (let id of categoryIds) {
-                const area = document.getElementById(`area-${id}`)?.value;
-                const unitsPrior = parseFloat(document.getElementById(`units-prior-${id}`)?.value) || 0;
-                const unitsDamaged = parseFloat(document.getElementById(`units-damaged-${id}`)?.value) || 0;
-                const unitsReconstructed = parseFloat(document.getElementById(`units-reconstructed-${id}`)?.value) || 0;
-                const avgLostDays = parseFloat(document.getElementById(`average-lost-days-${id}`)?.value) || 0;
-                const populationPerUnit = parseFloat(document.getElementById(`population-per-unit-${id}`)?.value) || 0;
-                const avgLoss = parseFloat(document.getElementById(`average-loss-${id}`)?.value) || 0;
-                const lossDuration = parseFloat(document.getElementById(`loss-duration-${id}`)?.value) || 0;
-                const totalRecoveryCost = parseFloat(document.getElementById(`total-recovery-cost-${id}`)?.value) || 0;
-                const reconstructionCostPerUnit = parseFloat(document.getElementById(`reconstruction-cost-unit-${id}`)?.value) || 0;
-
- // Update the titles for each specific table based on area
-        document.querySelectorAll('h3').forEach((h3) => {
-            if (h3.textContent.includes('Summary Table 1.1')) {
-                h3.innerText = `Summary Table 1.1: Baseline and Damage Analysis - ${district} (Rural)`;
-            }
-            if (h3.textContent.includes('Summary Table 1.2')) {
-                h3.innerText = `Summary Table 1.2: Baseline and Damage Analysis - ${district} (Urban)`;
-            }
-            if (h3.textContent.includes('Summary Table 1.3')) {
-                h3.innerText = `Summary Table 1.3: Population Analysis - ${district} (Rural)`;
-            }
-            if (h3.textContent.includes('Summary Table 1.4')) {
-                h3.innerText = `Summary Table 1.4: Population Analysis - ${district} (Urban)`;
-            }
-            if (h3.textContent.includes('Summary Table 2.1')) {
-                h3.innerText = `Summary Table 2.1: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Rural)`;
-            }
-            if (h3.textContent.includes('Summary Table 2.2')) {
-                h3.innerText = `Summary Table 2.2: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Urban)`;
-            }
-
-            // For Summary Table 3 and 4, just show the district without Rural/Urban
-            if (h3.textContent.includes('Summary Table 3')) {
-                h3.innerText = `Summary Table 3: Sector-wise Damage, Loss, Reconstruction and Recovery Needs - ${district}`;
-            }
-            if (h3.textContent.includes('Summary Table 4')) {
-                h3.innerText = `Summary Table 4: Sector Unit Cost Details - ${district}`;
+                    if (!document.getElementById('pdna-dct-view').classList.contains('hidden')) {
+                        window.updateOpenCardsCosts();
+                    } else if (!document.getElementById('pdna-dcm-view').classList.contains('hidden')) {
+                        window.renderChallenges();
+                    }
+                });
             }
         });
 
-                // Get unit cost based on selected option
-                const selectedUnitCostOption = document.querySelector(`input[name="unit-cost-option-${id}"]:checked`)?.value;
-                let unitCost = 0;
-                let unitCostSource = '';
+        // LOGIN LOGIC
+        window.setLoginRole = (r) => {
+            appState.role = r;
+            document.getElementById('role-dct').className = r === 'dct' ? "py-3 border-2 rounded-xl text-sm font-bold btn-transition border-blue-600 text-blue-700 bg-blue-50" : "py-3 border-2 rounded-xl text-sm font-bold btn-transition border-slate-200 text-slate-400";
+            document.getElementById('role-evf').className = r === 'evf' ? "py-3 border-2 rounded-xl text-sm font-bold btn-transition border-emerald-600 text-emerald-700 bg-emerald-50" : "py-3 border-2 rounded-xl text-sm font-bold btn-transition border-slate-200 text-slate-400";
+            document.getElementById('role-dcm').className = r === 'dcm' ? "py-3 border-2 rounded-xl text-sm font-bold btn-transition border-blue-600 text-blue-700 bg-blue-50" : "py-3 border-2 rounded-xl text-sm font-bold btn-transition border-slate-200 text-slate-400";
+            document.getElementById('login-geo-section').style.display = r === 'dcm' ? 'none' : 'block';
+        };
 
-                if (selectedUnitCostOption === 'norms') {
-                    unitCost = parseFloat(document.getElementById(`unit-cost-value-norms-${id}`)?.value) || 0;
-                    unitCostSource = document.getElementById(`unit-cost-source-norms-${id}`)?.value || 'Norms';
-                } else if (selectedUnitCostOption === 'actuals') {
-                    unitCost = parseFloat(document.getElementById(`unit-cost-value-actuals-${id}`)?.value) || 0;
-                    unitCostSource = 'Actuals';
-                } else if (selectedUnitCostOption === 'other') {
-                    unitCost = parseFloat(document.getElementById(`unit-cost-value-other-${id}`)?.value) || 0;
-                    unitCostSource = document.getElementById(`unit-cost-source-other-${id}`)?.value || 'Other';
-                }
+        window.updateDistrictOptions = () => {
+            const s = document.getElementById('login-state').value;
+            const t = document.getElementById('login-district');
+            t.innerHTML = '';
+            if(STATE_DATA[s]) STATE_DATA[s].sort().forEach(d => t.add(new Option(d, d)));
+        };
 
-                const errorDiv = document.getElementById(`error-${id}`);
-                if (
-                    unitsPrior <= 0 || unitsDamaged < 0 || unitsDamaged > unitsPrior ||
-                    unitsReconstructed < 0 || unitsReconstructed > unitsDamaged ||
-                    avgLostDays < 0 || unitCost <= 0 ||
-                    totalRecoveryCost < 0 || reconstructionCostPerUnit < 0 ||
-                    area === '' || !selectedUnitCostOption ||
-                    populationPerUnit < 0
-                ) {
-                    errorDiv.style.display = 'block';
-                    allInputsValid = false;
-                } else {
-                    errorDiv.style.display = 'none';
-                }
-
-                if (allInputsValid) {
-                    const avgProportionDamaged = ((unitsDamaged / unitsPrior) * 100).toFixed(2);
-                    const proportionReconstructed = ((unitsReconstructed / unitsDamaged) * 100).toFixed(2);
-
-                    const totalPopulationAffected = populationPerUnit * unitsDamaged;
-                    const populationBenefitedAfterReconstruction = populationPerUnit * unitsReconstructed;
-
-                    const totalDamageCost = unitCost * unitsDamaged; // Assuming full unit cost for damaged units
-                    let totalLossCost = 'N/A';
-
-                    // Check if Average Loss Per Day and Duration of Loss are provided
-                    if (avgLoss > 0 && lossDuration > 0) {
-                        totalLossCost = avgLoss * lossDuration;
-                    }
-
-                    const totalReconstructionCost = reconstructionCostPerUnit * unitsReconstructed;
-
-                    const categoryName = document.querySelector(`#category-${id} h3`)?.innerText;
-                    let [componentName, sectorNameText] = categoryName.split(" (");
-
-                    // Remove the closing parenthesis from sector name
-                    sectorNameText = sectorNameText?.replace(")", "") || categoryName;
-
-                    // Add to entries array for Summary Tables
-                    allEntries.push({
-                        category: sectorNameText,
-                        component: componentName,
-                        area: area,
-                        unitsPrior: unitsPrior,
-                        unitsDamaged: unitsDamaged,
-                        avgProportionDamaged: avgProportionDamaged,
-                        unitsReconstructed: unitsReconstructed,
-                        proportionReconstructed: proportionReconstructed,
-                        avgLostDays: avgLostDays,
-                        populationPerUnit: populationPerUnit,
-                        totalPopulationAffected: totalPopulationAffected,
-                        populationBenefitedAfterReconstruction: populationBenefitedAfterReconstruction,
-                        totalDamageCost: totalDamageCost,
-                        totalLossCost: totalLossCost,
-                        totalRecoveryCost: totalRecoveryCost,
-                        totalReconstructionCost: totalReconstructionCost
-                    });
-
-                    // Prepare data for Summary Table 2
-                    const key = componentName;
-
-                    if (!summaryData[key]) {
-                        summaryData[key] = {
-                            component: componentName,
-                            unitsDamaged: { Rural: 0, Urban: 0 },
-                            totalLossCost: { Rural: 0, Urban: 0 },
-                            totalRecoveryCost: { Rural: 0, Urban: 0 },
-                            totalReconstructionCost: { Rural: 0, Urban: 0 },
-                            totalPercentageDamage: { Rural: 0, Urban: 0 },
-                            totalUnitsDamaged: { Rural: 0, Urban: 0 }
-                        };
-                    }
-
-                    summaryData[key].unitsDamaged[area] += unitsDamaged;
-                    summaryData[key].totalUnitsDamaged[area] += unitsDamaged;
-
-                    if (totalLossCost !== 'N/A') {
-                        summaryData[key].totalLossCost[area] += totalLossCost;
-                    }
-
-                    summaryData[key].totalRecoveryCost[area] += totalRecoveryCost;
-                    summaryData[key].totalReconstructionCost[area] += totalReconstructionCost;
-
-                    // Accumulate weighted percentage damage
-                    summaryData[key].totalPercentageDamage[area] += (unitsDamaged / unitsPrior) * 100 * unitsDamaged;
-
-                    // Prepare data for Summary Table 3 (Sector-wise Totals)
-                    if (!sectorTotals[sectorNameText]) {
-                        sectorTotals[sectorNameText] = {
-                            totalDamage: 0,
-                            totalLoss: 0,
-                            totalRecovery: 0,
-                            totalReconstruction: 0
-                        };
-                    }
-
-                    sectorTotals[sectorNameText].totalDamage += totalDamageCost;
-                    if (totalLossCost !== 'N/A') {
-                        sectorTotals[sectorNameText].totalLoss += totalLossCost;
-                    }
-                    sectorTotals[sectorNameText].totalRecovery += totalRecoveryCost;
-                    sectorTotals[sectorNameText].totalReconstruction += totalReconstructionCost;
-
-                    // Prepare data for Summary Table 4 (Unit Cost Details)
-                    unitCostDetails.push({
-                        sector: sectorNameText,
-                        component: componentName,
-                        averageUnitCost: unitCost,
-                        source: unitCostSource
-                    });
-
-                    // Accumulate totals for the summary text
-                    totalDamageAll += totalDamageCost;
-                    if (totalLossCost !== 'N/A') {
-                        totalLossAll += totalLossCost;
-                    }
-                    totalRecoveryAll += totalRecoveryCost;
-                    totalReconstructionAll += totalReconstructionCost;
-                }
-            }
-
-            if (allInputsValid) {
-                // Update summary tables
-                updateSummaryTable1();
-                updateSummaryTable1Population();
-                updateSummaryTable2();
-                updateSummaryTable3();
-                updateSummaryTable4();
-                updateSummaryText(totalDamageAll, totalLossAll, totalRecoveryAll, totalReconstructionAll);
-                document.getElementById('result').style.display = 'block';
-                // Generate pie chart
-                generatePieChart();
+        window.handleLogin = () => {
+            if(!document.getElementById('login-email').value.includes('@')) return alert("Enter valid official email.");
+            appState.state = document.getElementById('login-state').value;
+            appState.district = document.getElementById('login-district').value;
+            
+            document.getElementById('view-login').classList.add('hidden');
+            
+            if(appState.role === 'dct') {
+                document.getElementById('pdna-dct-view').classList.remove('hidden');
+                document.getElementById('dct-geo-header').innerText = `${appState.district}, ${appState.state} - DCT Portal`;
+                window.updateOpenCardsCosts(); 
+            } else if (appState.role === 'evf') {
+                document.getElementById('pdna-evf-view').classList.remove('hidden');
+                document.getElementById('evf-geo-header').innerText = `${appState.district}, ${appState.state}`;
+                window.renderEVFForm();
             } else {
-                alert('Please correct the highlighted errors before proceeding.');
+                document.getElementById('pdna-dcm-view').classList.remove('hidden');
+                window.processDCMData();
+                window.renderChallenges();
+                window.renderEVFInsights();
             }
-        }
+        };
 
-        function updateSummaryTable1() {
-            const tableBodyRural = document.querySelector("#summary-table-1-rural tbody");
-            const tableBodyUrban = document.querySelector("#summary-table-1-urban tbody");
-            tableBodyRural.innerHTML = '';  // Clear previous results
-            tableBodyUrban.innerHTML = '';
-
-            allEntries.forEach(entry => {
-                const row = `
-                    <tr>
-                        <td>${entry.category}</td>
-                        <td>${entry.component}</td>
-                        <td>${entry.unitsPrior}</td>
-                        <td>${entry.unitsDamaged}</td>
-                        <td>${entry.avgProportionDamaged}%</td>
-                        <td>${entry.unitsReconstructed}</td>
-                        <td>${entry.proportionReconstructed}%</td>
-                        <td>${entry.avgLostDays}</td>
-                    </tr>
+        // ==========================================
+        // EVF LOGIC (EXPERT VALIDATION)
+        // ==========================================
+        window.renderEVFForm = () => {
+            const container = document.getElementById('evf-categories-container');
+            let html = '';
+            
+            Object.keys(EVF_OBSERVATIONS).forEach(category => {
+                const obsList = EVF_OBSERVATIONS[category];
+                html += `
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                        <div class="bg-slate-100 p-4 font-black text-slate-700 uppercase tracking-wide border-b border-slate-200">${category}</div>
+                        <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white">
                 `;
-
-                if (entry.area === 'Rural') {
-                    tableBodyRural.insertAdjacentHTML('beforeend', row);
-                } else {
-                    tableBodyUrban.insertAdjacentHTML('beforeend', row);
-                }
-            });
-        }
-
-        function updateSummaryTable1Population() {
-            const tableBodyRural = document.querySelector("#summary-table-1-population-rural tbody");
-            const tableBodyUrban = document.querySelector("#summary-table-1-population-urban tbody");
-            tableBodyRural.innerHTML = '';  // Clear previous results
-            tableBodyUrban.innerHTML = '';
-
-            allEntries.forEach(entry => {
-                const row = `
-                    <tr>
-                        <td>${entry.category}</td>
-                        <td>${entry.component}</td>
-                        <td>${entry.populationPerUnit}</td>
-                        <td>${entry.totalPopulationAffected}</td>
-                        <td>${entry.populationBenefitedAfterReconstruction}</td>
-                    </tr>
-                `;
-
-                if (entry.area === 'Rural') {
-                    tableBodyRural.insertAdjacentHTML('beforeend', row);
-                } else {
-                    tableBodyUrban.insertAdjacentHTML('beforeend', row);
-                }
-            });
-        }
-
-        function updateSummaryTable2() {
-            const tableBodyRural = document.querySelector("#summary-table-2-rural tbody");
-            const tableBodyUrban = document.querySelector("#summary-table-2-urban tbody");
-            tableBodyRural.innerHTML = '';  // Clear previous results
-            tableBodyUrban.innerHTML = '';
-
-            for (let key in summaryData) {
-                const data = summaryData[key];
-
-                // Calculate weighted average percentage damage for Rural
-                const avgPercentDamageRural = data.totalUnitsDamaged.Rural > 0 ? (data.totalPercentageDamage.Rural / data.totalUnitsDamaged.Rural).toFixed(2) : 0;
-
-                // Calculate weighted average percentage damage for Urban
-                const avgPercentDamageUrban = data.totalUnitsDamaged.Urban > 0 ? (data.totalPercentageDamage.Urban / data.totalUnitsDamaged.Urban).toFixed(2) : 0;
-
-                // Prepare row for Rural table if data exists
-                if (data.totalUnitsDamaged.Rural > 0) {
-                    const rowRural = `
-                        <tr>
-                            <td>${data.component}</td>
-                            <td>${data.unitsDamaged.Rural}</td>
-                            <td>${avgPercentDamageRural}%</td>
-                            <td>${data.totalLossCost.Rural > 0 ? '₹' + data.totalLossCost.Rural.toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A'}</td>
-                            <td>₹${data.totalRecoveryCost.Rural.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                            <td>₹${data.totalReconstructionCost.Rural.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                        </tr>
+                obsList.forEach(obs => {
+                    html += `
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer transition-colors">
+                            <input type="checkbox" class="evf-checkbox mt-0.5" value="${obs.code}" data-text="${obs.text}">
+                            <div>
+                                <span class="font-bold text-xs bg-slate-200 text-slate-600 px-1.5 rounded mr-1">${obs.code}</span>
+                                <span class="text-sm text-slate-700">${obs.text}</span>
+                            </div>
+                        </label>
                     `;
-                    tableBodyRural.insertAdjacentHTML('beforeend', rowRural);
-                }
-
-                // Prepare row for Urban table if data exists
-                if (data.totalUnitsDamaged.Urban > 0) {
-                    const rowUrban = `
-                        <tr>
-                            <td>${data.component}</td>
-                            <td>${data.unitsDamaged.Urban}</td>
-                            <td>${avgPercentDamageUrban}%</td>
-                            <td>${data.totalLossCost.Urban > 0 ? '₹' + data.totalLossCost.Urban.toLocaleString('en-IN', {minimumFractionDigits: 2}) : 'N/A'}</td>
-                            <td>₹${data.totalRecoveryCost.Urban.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                            <td>₹${data.totalReconstructionCost.Urban.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                        </tr>
-                    `;
-                    tableBodyUrban.insertAdjacentHTML('beforeend', rowUrban);
-                }
-            }
-        }
-
-        function updateSummaryTable3() {
-            const tableBody = document.querySelector("#summary-table-3 tbody");
-            tableBody.innerHTML = '';  // Clear previous results
-
-            for (let sector in sectorTotals) {
-                const data = sectorTotals[sector];
-                const row = `
-                    <tr>
-                        <td>${sector}</td>
-                        <td>₹${data.totalDamage.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                        <td>₹${data.totalLoss.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                        <td>₹${data.totalRecovery.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                        <td>₹${data.totalReconstruction.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                    </tr>
-                `;
-                tableBody.insertAdjacentHTML('beforeend', row);
-            }
-        }
-
-        function updateSummaryTable4() {
-            const tableBody = document.querySelector("#summary-table-4 tbody");
-            tableBody.innerHTML = '';  // Clear previous results
-
-            unitCostDetails.forEach(entry => {
-                const row = `
-                    <tr>
-                        <td>${entry.sector}</td>
-                        <td>${entry.component}</td>
-                        <td>₹${entry.averageUnitCost.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                        <td>${entry.source}</td>
-                    </tr>
-                `;
-                tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                html += `</div></div>`;
             });
-        }
+            container.innerHTML = html;
+        };
 
-        function updateSummaryText(totalDamage, totalLoss, totalRecovery, totalReconstruction) {
-            const summaryDiv = document.getElementById('summary-text');
-            summaryDiv.innerHTML = `
-                The total damage is ₹${totalDamage.toLocaleString('en-IN', {minimumFractionDigits: 2})}, 
-                the total loss is ₹${totalLoss.toLocaleString('en-IN', {minimumFractionDigits: 2})}, 
-                the total recovery cost is ₹${totalRecovery.toLocaleString('en-IN', {minimumFractionDigits: 2})}, 
-                and the total reconstruction cost is ₹${totalReconstruction.toLocaleString('en-IN', {minimumFractionDigits: 2})}.
+        window.getGPSLocation = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(6);
+                        const lng = position.coords.longitude.toFixed(6);
+                        document.getElementById('evf-gps').value = `${lat}, ${lng}`;
+                    },
+                    (error) => { alert("Unable to retrieve location. Please check browser permissions."); }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        };
+
+        window.generateMLReport = (selectedObs) => {
+            if (selectedObs.length === 0) return "No significant anomalies recorded.";
+            
+            let reportHTML = `<p class="mb-4">Based on the combinatorial analysis of field inputs, the ML inference engine identifies the following critical policy interventions:</p>`;
+            
+            const codes = selectedObs.map(o => o.code);
+            
+            // Heuristic ML Rules Mapping
+            const hasStructuralFailure = codes.includes('H1') || codes.includes('H4') || codes.includes('H12') || codes.includes('H15');
+            const hasWashRisk = (codes.includes('W2') || codes.includes('W9')) && codes.includes('W8');
+            const hasCampRisk = codes.includes('D2') && codes.includes('D8');
+            const hasLogisticsBlock = codes.includes('T3') || codes.includes('T10');
+            const agriCount = codes.filter(c => c.startsWith('A')).length;
+
+            if (hasStructuralFailure) {
+                reportHTML += `<div class="p-4 bg-red-50 border-l-4 border-red-600 rounded mb-3">
+                    <strong class="text-red-800 uppercase block mb-1">CRITICAL STRUCTURAL RISK (Evacuation Protocol)</strong>
+                    Severe load-bearing structural failures identified (shear cracks, excessive tilt, or total roof collapse). 
+                    <em>Recommendation: Immediate prohibition of occupancy. Deploy structural engineers for emergency shoring. Establish temporary displacement shelters for affected residents.</em>
+                </div>`;
+            }
+
+            if (hasWashRisk || hasCampRisk) {
+                reportHTML += `<div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded mb-3">
+                    <strong class="text-orange-800 uppercase block mb-1">EPIDEMIOLOGICAL THREAT (Public Health)</strong>
+                    Concurrent indicators of contaminated water sources and inadequate sanitation (or camp overcrowding) detected.
+                    <em>Recommendation: High probability of waterborne disease outbreak. Immediately mobilize mobile water purification units (MWPUs), distribute halogen tablets, and deploy emergency bio-digester latrines.</em>
+                </div>`;
+            }
+
+            if (hasLogisticsBlock) {
+                reportHTML += `<div class="p-4 bg-blue-50 border-l-4 border-blue-600 rounded mb-3">
+                    <strong class="text-blue-800 uppercase block mb-1">LOGISTICS BOTTLENECK</strong>
+                    Critical access routes are marked as impassable or inundated.
+                    <em>Recommendation: Standard relief supply chains are broken. Initiate protocol for alternative logistics (pontoon bridges, shallow draft boats, or aerial supply drops).</em>
+                </div>`;
+            }
+
+            if (agriCount >= 3) {
+                reportHTML += `<div class="p-4 bg-emerald-50 border-l-4 border-emerald-600 rounded mb-3">
+                    <strong class="text-emerald-800 uppercase block mb-1">SEVERE AGRARIAN DISRUPTION</strong>
+                    Widespread agricultural damage recorded (${agriCount} distinct failure modes).
+                    <em>Recommendation: Activate SDRF crop loss compensation mechanisms immediately to prevent secondary economic shock. Dispatch veterinary support if livestock mortality is present.</em>
+                </div>`;
+            }
+
+            if (!hasStructuralFailure && !hasWashRisk && !hasCampRisk && !hasLogisticsBlock && agriCount < 3) {
+                reportHTML += `<div class="p-4 bg-slate-100 border-l-4 border-slate-500 rounded">
+                    <strong class="text-slate-800 uppercase block mb-1">STANDARD RECOVERY PROTOCOL</strong>
+                    Observations indicate standard peripheral damage. Proceed with routine financial compensation and phased infrastructure repair.
+                </div>`;
+            }
+
+            return reportHTML;
+        };
+
+        window.submitEVF = async () => {
+            const siteName = document.getElementById('evf-site-name').value;
+            const gps = document.getElementById('evf-gps').value;
+            
+            if (!siteName) return alert("Please provide a Location / Site Name.");
+            if (!gps) return alert("Please capture GPS coordinates.");
+
+            const checkboxes = document.querySelectorAll('.evf-checkbox:checked');
+            if (checkboxes.length === 0) return alert("Select at least one observation before submitting.");
+
+            const selectedObs = Array.from(checkboxes).map(cb => ({
+                code: cb.value, text: cb.dataset.text
+            }));
+
+            const mlInsight = window.generateMLReport(selectedObs);
+
+            try {
+                document.getElementById('evf-spinner').classList.remove('hidden');
+                document.getElementById('evf-submit-btn').disabled = true;
+
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'evf_reports'), {
+                    state: appState.state,
+                    district: appState.district,
+                    siteName: siteName,
+                    gps: gps,
+                    observations: selectedObs,
+                    insightHtml: mlInsight,
+                    expertEmail: document.getElementById('login-email').value,
+                    createdAt: Timestamp.now()
+                });
+
+                document.getElementById('ml-insight-content').innerHTML = mlInsight;
+                document.getElementById('ml-insight-modal').classList.remove('hidden');
+                
+            } catch(e) {
+                console.error(e);
+                alert("Failed to submit EVF report to cloud.");
+            } finally {
+                document.getElementById('evf-spinner').classList.add('hidden');
+                document.getElementById('evf-submit-btn').disabled = false;
+            }
+        };
+
+        // DCT FORM LOGIC
+        window.loadComponents = () => {
+            const s = document.getElementById('category').value;
+            const t = document.getElementById('component');
+            t.innerHTML = '<option value="">Select</option>';
+            if(ENGINEERING_MAP[s]) Object.keys(ENGINEERING_MAP[s]).forEach(c => t.add(new Option(c, c)));
+            window.loadSubComponents();
+        };
+
+        window.loadSubComponents = () => {
+            const s = document.getElementById('category').value;
+            const c = document.getElementById('component').value;
+            const t = document.getElementById('sub-component');
+            t.innerHTML = '<option value="">Select</option>';
+            if(ENGINEERING_MAP[s]?.[c]) Object.keys(ENGINEERING_MAP[s][c]).forEach(x => t.add(new Option(x, x)));
+            window.loadBasicUnits();
+        };
+
+        window.loadBasicUnits = () => {
+            const s = document.getElementById('category').value;
+            const c = document.getElementById('component').value;
+            const sub = document.getElementById('sub-component').value;
+            const t = document.getElementById('basic-unit');
+            t.innerHTML = '<option value="">Select</option>';
+            if(ENGINEERING_MAP[s]?.[c]?.[sub]) ENGINEERING_MAP[s][c][sub].forEach(x => t.add(new Option(x, x)));
+        };
+
+        window.addSector = () => {
+            const unit = document.getElementById('basic-unit').value;
+            if(!unit) return alert("Please select hierarchy down to Basic Unit.");
+            window.categoryCount++; 
+            const id = window.categoryCount;
+            window.categoryIds.push(id);
+            
+            const sector = document.getElementById('category').value;
+            const comp = document.getElementById('component').value;
+            const sub = document.getElementById('sub-component').value;
+            
+            const baseSor = SOR_UNIT_RATES[unit] || { rate: 2500, unit: "Unit", ref: "General Est. 2022" };
+            const isCustom = !!appState.customRates[unit];
+            const activeRate = appState.customRates[unit] || baseSor.rate;
+            const pending = appState.challenges.find(c => c.unit === unit && c.district === appState.district && c.status === 'pending');
+
+            // Default defaults based on SoR Unit Type
+            const uType = baseSor.unit.toLowerCase();
+            let defUom = 'm';
+            let defDim = '2d';
+            
+            if (uType.includes('no')) { defUom = 'no'; defDim = 'qty'; }
+            else if (uType.includes('sqm')) { defUom = 'm'; defDim = '2d'; }
+            else if (uType.includes('cum')) { defUom = 'm'; defDim = '3d'; }
+            else if (uType.includes('rm')) { defUom = 'm'; defDim = '1d'; }
+            else if (uType.includes('hectare')) { defUom = 'hectare'; defDim = 'qty'; }
+
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.id = `category-${id}`;
+            div.dataset.discrepant = 'false';
+            
+            div.innerHTML = `
+                <h3 style="margin-top:0; color:#007bff;">${unit} <span style="font-size:12px; color:#6c757d;">(${sector} > ${comp} > ${sub})</span></h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div><label>Damage Weight (Severity)</label>
+                        <select id="weight-${id}" onchange="calculateCard(${id})" class="p-2 border rounded w-full bg-white font-bold text-sm">
+                            <option value="0.15">Partial Damage (<30%)</option>
+                            <option value="0.525">Severe Damage (30-75%)</option>
+                            <option value="0.875">Full Damage (>75%)</option>
+                        </select>
+                    </div>
+                    <div><label>Const. Year</label><input type="number" id="year-${id}" value="2010" class="p-2 border rounded w-full text-sm font-bold" oninput="calculateCard(${id})"></div>
+                    <div><label>Prior Total (${baseSor.unit})</label>
+                        <input type="number" id="prior-qty-${id}" oninput="calculateCard(${id})" class="p-2 border rounded w-full bg-slate-50 text-sm font-bold" placeholder="Total Base Qty">
+                    </div>
+                    <div><label style="color:#0284c7;">ML Hist. Cost (₹)</label><input type="number" id="hist-cost-${id}" readonly class="p-2 border rounded w-full bg-blue-50 font-bold text-sm" value="0"></div>
+                </div>
+
+                <div class="bg-slate-50 p-4 border rounded mb-4 shadow-sm">
+                    <label class="text-[10px] font-black text-slate-500 uppercase mb-3 block border-b pb-1">Physical Damage Measurement</label>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                        <div class="col-span-1">
+                            <label class="text-[10px] text-slate-400 font-bold">Measurement Unit</label>
+                            <select id="uom-${id}" onchange="toggleDimensions(${id})" class="w-full p-2 border rounded text-xs font-bold">
+                                <option value="m" ${defUom==='m'?'selected':''}>Metres (m)</option>
+                                <option value="cm" ${defUom==='cm'?'selected':''}>Centimetres (cm)</option>
+                                <option value="ft" ${defUom==='ft'?'selected':''}>Feet (ft)</option>
+                                <option value="km" ${defUom==='km'?'selected':''}>Kilometres (km)</option>
+                                <option value="acre" ${defUom==='acre'?'selected':''}>Acres</option>
+                                <option value="hectare" ${defUom==='hectare'?'selected':''}>Hectares</option>
+                                <option value="litre" ${defUom==='litre'?'selected':''}>Litres</option>
+                                <option value="no" ${defUom==='no'?'selected':''}>Numbers / Count</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="text-[10px] text-slate-400 font-bold">Dimensions Config</label>
+                            <select id="dim-type-${id}" onchange="toggleDimensions(${id})" class="w-full p-2 border rounded text-xs font-bold">
+                                <option value="1d" ${defDim==='1d'?'selected':''}>Length Only</option>
+                                <option value="2d" ${defDim==='2d'?'selected':''}>Length × Breadth (Area)</option>
+                                <option value="3d" ${defDim==='3d'?'selected':''}>Length × Breadth × Height (Vol)</option>
+                                <option value="qty" ${defDim==='qty'?'selected':''}>Direct Quantity</option>
+                            </select>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-[10px] text-slate-400 font-bold">Enter Damage Values</label>
+                            <div class="flex gap-2" id="dim-inputs-${id}">
+                                <!-- Dynamic Inputs go here -->
+                            </div>
+                        </div>
+                        <div class="col-span-1 bg-white p-2 rounded border text-center">
+                            <label class="text-[9px] text-slate-400 font-bold block uppercase tracking-wider mb-1">Standardized Equiv.</label>
+                            <span id="computed-dmg-${id}" class="text-blue-700 font-black text-lg leading-none">0</span>
+                            <span class="text-[10px] font-bold text-slate-500">${baseSor.unit}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="relative p-3 bg-white border rounded shadow-sm">
+                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Current SoR Base</label>
+                        <input type="number" id="unit-cost-${id}" value="${activeRate}" readonly style="background:transparent; border:none; font-black; color:#28a745; width: 100%; font-size:16px; padding:0;">
+                        <span style="font-size:10px; display:block; color:#64748b;">(<span id="unit-info-${id}" style="color:${isCustom?'#6f42c1':'inherit'}">${isCustom ? 'Approved Custom Rate' : baseSor.ref}</span>)</span>
+                        <button type="button" id="challenge-btn-${id}" onclick="openChallengeModal('${unit}', ${baseSor.rate})" style="position:absolute; right:10px; top:15px; font-size:10px; background:${pending?'#ccc':'#ffc107'}; border:none; padding:4px 8px; border-radius:3px; cursor:${pending?'not-allowed':'pointer'}; font-weight:bold; color:#1e293b;" ${pending?'disabled':''}>${pending ? 'Pending' : 'Challenge'}</button>
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded shadow-sm">
+                        <label class="text-[10px] font-black text-emerald-700 uppercase block mb-1">Expert Adj (₹) [Opt]</label>
+                        <input type="number" id="expert-${id}" oninput="calculateCard(${id})" class="w-full bg-transparent border-b-2 border-emerald-300 outline-none font-bold text-emerald-900" value="0" placeholder="+/-">
+                    </div>
+                    <div class="p-3 bg-slate-900 rounded shadow-sm text-right flex flex-col justify-center">
+                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Total Damage Est (₹)</label>
+                        <input type="text" id="recon-${id}" readonly class="w-full bg-transparent border-none outline-none font-black text-white text-xl text-right p-0" value="0">
+                    </div>
+                </div>
+
+                <div id="validation-warn-${id}" class="warn-string">
+                    ⚠️ <span>Discrepancy Alert</span>
+                </div>
+
+                <div class="stat-string" id="stat-val-${id}"></div>
+
+                <button class="remove-btn" onclick="document.getElementById('category-${id}').remove(); window.categoryIds = window.categoryIds.filter(x=>x!==${id}); window.calculateCard(${id});">Remove Component</button>
             `;
-        }
+            document.getElementById('selected-sectors').appendChild(div);
+            window.toggleDimensions(id); // Initialize inputs
+        };
 
-        function generatePieChart() {
-            // Aggregate total damage cost per sector
-            const sectorData = {};
-            allEntries.forEach(entry => {
-                if (sectorData[entry.category]) {
-                    sectorData[entry.category] += entry.totalDamageCost;
-                } else {
-                    sectorData[entry.category] = entry.totalDamageCost;
-                }
-            });
+        window.toggleDimensions = (id) => {
+            const dimType = document.getElementById(`dim-type-${id}`).value;
+            const container = document.getElementById(`dim-inputs-${id}`);
+            
+            let html = '';
+            if (dimType === '1d') {
+                html = `<input type="number" id="dim-l-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Length">`;
+            } else if (dimType === '2d') {
+                html = `<input type="number" id="dim-l-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Length">
+                        <span class="text-slate-400 self-center font-black">×</span>
+                        <input type="number" id="dim-b-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Breadth">`;
+            } else if (dimType === '3d') {
+                html = `<input type="number" id="dim-l-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="L">
+                        <span class="text-slate-400 self-center font-black">×</span>
+                        <input type="number" id="dim-b-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="B">
+                        <span class="text-slate-400 self-center font-black">×</span>
+                        <input type="number" id="dim-h-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="H">`;
+            } else if (dimType === 'qty') {
+                html = `<input type="number" id="dim-qty-${id}" oninput="calculateCard(${id})" class="w-full p-2 border rounded text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Total Qty">`;
+            }
+            container.innerHTML = html;
+            window.calculateCard(id);
+        };
 
-            // Prepare data for the chart
-            const labels = Object.keys(sectorData);
-            const data = Object.values(sectorData);
+        window.calculateCard = (id) => {
+            const cardEl = document.getElementById(`category-${id}`);
+            if (!cardEl) return;
+            
+            const unitName = cardEl.querySelector('h3').innerText.split(' (')[0].trim();
+            const targetUnit = SOR_UNIT_RATES[unitName]?.unit || 'Unit';
 
-            // Remove existing chart canvas if any
-            if (window.damageChartInstance) {
-                window.damageChartInstance.destroy();
+            const currentCost = parseFloat(document.getElementById(`unit-cost-${id}`).value) || 0;
+            const expert = parseFloat(document.getElementById(`expert-${id}`).value) || 0;
+            const buildYear = parseInt(document.getElementById(`year-${id}`).value) || 2010;
+            const priorTotalQty = parseFloat(document.getElementById(`prior-qty-${id}`).value) || 0;
+
+            const uom = document.getElementById(`uom-${id}`).value;
+            const dimType = document.getElementById(`dim-type-${id}`).value;
+            const wSelect = document.getElementById(`weight-${id}`);
+            const weightVal = parseFloat(wSelect.value) || 0;
+            const weightText = wSelect.options[wSelect.selectedIndex].text;
+
+            // Metric Conversion
+            let mFactor = 1;
+            if (uom === 'cm') mFactor = 0.01;
+            if (uom === 'ft') mFactor = 0.3048;
+            if (uom === 'km') mFactor = 1000;
+
+            let computedStandardQty = 0;
+            let rawL = parseFloat(document.getElementById(`dim-l-${id}`)?.value) || 0;
+            let rawB = parseFloat(document.getElementById(`dim-b-${id}`)?.value) || 1;
+            let rawH = parseFloat(document.getElementById(`dim-h-${id}`)?.value) || 1;
+            let rawQ = parseFloat(document.getElementById(`dim-qty-${id}`)?.value) || 0;
+
+            if (dimType === '1d') {
+                computedStandardQty = rawL * mFactor; 
+            } else if (dimType === '2d') {
+                computedStandardQty = (rawL * mFactor) * (rawB * mFactor); 
+            } else if (dimType === '3d') {
+                computedStandardQty = (rawL * mFactor) * (rawB * mFactor) * (rawH * mFactor); 
+            } else if (dimType === 'qty') {
+                if (uom === 'acre' && targetUnit === 'Hectare') computedStandardQty = rawQ * 0.404686;
+                else if (uom === 'hectare' && targetUnit === 'Hectare') computedStandardQty = rawQ;
+                else if (uom === 'litre' && targetUnit === 'CuM') computedStandardQty = rawQ * 0.001;
+                else computedStandardQty = rawQ; 
             }
 
-            const ctx = document.getElementById('damageChart').getContext('2d');
-            window.damageChartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total Damage Cost',
-                        data: data,
-                        backgroundColor: [
-                            '#007bff',
-                            '#28a745',
-                            '#dc3545',
-                            '#ffc107',
-                            '#17a2b8',
-                            '#6f42c1',
-                            '#fd7e14',
-                            '#6c757d',
-                            '#20c997',
-                            '#6610f2'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Total Damage Cost by Sector'
+            // Update UI Display
+            document.getElementById(`computed-dmg-${id}`).innerText = computedStandardQty.toFixed(2);
+
+            // Historical Cost (ML Estimation)
+            const refString = document.getElementById(`unit-info-${id}`).innerText;
+            const baseYearMatch = refString.match(/\d{4}/);
+            const sorYear = baseYearMatch ? parseInt(baseYearMatch[0]) : 2022;
+            const t = 0.06; // 6% inflation
+            const n = Math.max(0, sorYear - buildYear);
+            const histCost = currentCost / Math.pow((1 + t), n);
+            document.getElementById(`hist-cost-${id}`).value = Math.round(histCost);
+
+            // Damage Math
+            let weightedQty = computedStandardQty * weightVal;
+            const quantDmg = weightedQty * histCost;
+            document.getElementById(`recon-${id}`).value = Math.round(quantDmg + expert).toLocaleString('en-IN');
+
+            // Discrepancy Validation Engine
+            let ratio = priorTotalQty > 0 ? (computedStandardQty / priorTotalQty) * 100 : 0;
+            let isDiscrepant = false;
+            let warnMsg = "";
+
+            if (uom === 'no' || dimType === 'qty') {
+                if (computedStandardQty > priorTotalQty && priorTotalQty > 0) {
+                    isDiscrepant = true;
+                    warnMsg = `⚠️ Discrepancy Alert: You reported <strong>${computedStandardQty}</strong> damaged units, but the total prior base is only <strong>${priorTotalQty}</strong>.`;
+                }
+            } else {
+                if (priorTotalQty > 0) {
+                    if (weightVal === 0.15 && ratio > 30.1) {
+                        isDiscrepant = true;
+                        warnMsg = `⚠️ Discrepancy Alert: You selected <strong>${weightText}</strong> but your computed damaged quantity (${computedStandardQty.toFixed(2)}) is <strong>${ratio.toFixed(1)}%</strong> of the Prior Base. This does not align. Please select Severe or Full damage.`;
+                    } else if (weightVal === 0.525 && (ratio <= 30 || ratio > 75.1)) {
+                        isDiscrepant = true;
+                        warnMsg = `⚠️ Discrepancy Alert: You selected <strong>${weightText}</strong> but your computed damaged quantity (${computedStandardQty.toFixed(2)}) is <strong>${ratio.toFixed(1)}%</strong> of the Prior Base. This does not align.`;
+                    } else if (weightVal === 0.875 && ratio <= 75) {
+                        isDiscrepant = true;
+                        warnMsg = `⚠️ Discrepancy Alert: You selected <strong>${weightText}</strong> but your computed damaged quantity (${computedStandardQty.toFixed(2)}) is <strong>${ratio.toFixed(1)}%</strong> of the Prior Base. This does not align. Please select Severe or Partial damage.`;
+                    }
+                } else if (computedStandardQty > 0) {
+                    isDiscrepant = true;
+                    warnMsg = `⚠️ Discrepancy Alert: You have input damaged quantities, but the Prior Total base is 0.`;
+                }
+            }
+
+            const warnEl = document.getElementById(`validation-warn-${id}`);
+            if (isDiscrepant) {
+                cardEl.classList.add('discrepancy');
+                warnEl.style.display = 'block';
+                warnEl.innerHTML = warnMsg;
+                cardEl.dataset.discrepant = 'true';
+                cardEl.dataset.ratio = ratio.toFixed(1);
+            } else {
+                cardEl.classList.remove('discrepancy');
+                warnEl.style.display = 'none';
+                cardEl.dataset.discrepant = 'false';
+            }
+
+            document.getElementById(`stat-val-${id}`).innerHTML = `<em>ML Analytical Result:</em> Using reverse-discounting ($x_n/(1+t)^n$, where $t=0.06$), the original unit price built in ${buildYear} is <strong>₹${histCost.toFixed(2)}</strong> (95% CI). Damage calculated on historical base.`;
+            
+            // Store variables on DOM for extraction later
+            cardEl.dataset.physical = computedStandardQty;
+            cardEl.dataset.weighted = weightedQty;
+            cardEl.dataset.quant = quantDmg;
+        };
+
+        window.updateOpenCardsCosts = () => {
+            window.categoryIds.forEach(id => {
+                const el = document.getElementById(`category-${id}`);
+                if(el) {
+                    const unitName = el.querySelector('h3').innerText.split(' (')[0].trim();
+                    const baseSor = SOR_UNIT_RATES[unitName] || { rate: 2500, ref: "General Est." };
+                    const isCustom = !!appState.customRates[unitName];
+                    const activeRate = appState.customRates[unitName] || baseSor.rate;
+                    
+                    const costInput = document.getElementById(`unit-cost-${id}`);
+                    if (costInput && costInput.value != activeRate) {
+                        costInput.value = activeRate;
+                        const spanInfo = document.getElementById(`unit-info-${id}`);
+                        if(spanInfo) {
+                            spanInfo.innerText = isCustom ? "Approved Custom Rate" : baseSor.ref;
+                            spanInfo.style.color = isCustom ? "#6f42c1" : "#6c757d";
+                        }
+                        window.calculateCard(id);
+                    }
+                    
+                    const btn = document.getElementById(`challenge-btn-${id}`);
+                    const pending = appState.challenges.find(c => c.unit === unitName && c.district === appState.district && c.status === 'pending');
+                    if(btn) {
+                        if(pending) {
+                            btn.innerText = "Pending";
+                            btn.disabled = true;
+                            btn.style.background = '#ccc';
+                            btn.style.cursor = 'not-allowed';
+                        } else {
+                            btn.innerText = "Challenge";
+                            btn.disabled = false;
+                            btn.style.background = '#ffc107';
+                            btn.style.cursor = 'pointer';
                         }
                     }
                 }
             });
-        }
+        };
 
-       function exportToExcel(tableId, baseFilename) {
-    const district = document.getElementById('district').value || 'District';
-    
-    let filename;
-    let title;  // Store the exact table title
+        // CHALLENGE MODAL
+        window.openChallengeModal = (unit, origRate) => {
+            document.getElementById('challenge-unit-name').innerText = unit;
+            document.getElementById('challenge-orig-rate').innerText = origRate;
+            document.getElementById('challenge-prop-rate').value = '';
+            document.getElementById('challenge-reason').value = '';
+            document.getElementById('challenge-modal').classList.remove('hidden');
+        };
 
-    // Set filename and title based on tableId
-    if (tableId === 'summary-table-1-rural') {
-        filename = `${baseFilename.replace('.csv', '')}_${district}_Rural.csv`;
-        title = `Summary Table 1.1: Baseline and Damage Analysis - ${district} (Rural)`;
-    } else if (tableId === 'summary-table-1-urban') {
-        filename = `${baseFilename.replace('.csv', '')}_${district}_Urban.csv`;
-        title = `Summary Table 1.2: Baseline and Damage Analysis - ${district} (Urban)`;
-    } else if (tableId === 'summary-table-2-rural') {
-        filename = `${baseFilename.replace('.csv', '')}_${district}_Rural.csv`;
-        title = `Summary Table 2.1: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Rural)`;
-    } else if (tableId === 'summary-table-2-urban') {
-        filename = `${baseFilename.replace('.csv', '')}_${district}_Urban.csv`;
-        title = `Summary Table 2.2: Damage, Loss, Reconstruction and Recovery Needs - ${district} (Urban)`;
-    } else if (tableId === 'summary-table-3') {
-        filename = `${baseFilename.replace('.csv', '')}_${district}.csv`;
-        title = `Summary Table 3: Sector-wise Damage, Loss, Reconstruction and Recovery Needs - ${district}`;
-    } else if (tableId === 'summary-table-4') {
-        filename = `${baseFilename.replace('.csv', '')}_${district}.csv`;
-        title = `Summary Table 4: Sector Unit Cost Details - ${district}`;
-    } else {
-        title = `Summary Table for ${district}`;
-    }
+        window.submitChallenge = async () => {
+            const unit = document.getElementById('challenge-unit-name').innerText;
+            const origRate = parseFloat(document.getElementById('challenge-orig-rate').innerText);
+            const propRate = parseFloat(document.getElementById('challenge-prop-rate').value);
+            const reason = document.getElementById('challenge-reason').value;
 
-    let csvContent = '';
-    
-    // Add the title row at the top of the CSV file
-    csvContent += `${title}\r\n\r\n`;  // Add title with district and area type
+            if(!propRate || !reason) return alert("Please provide proposed rate and reason.");
 
-    // Extract rows from the table
-    const rows = document.querySelectorAll(`#${tableId} tr`);
-    rows.forEach(row => {
-        const cols = row.querySelectorAll('td, th');
-        const rowData = [];
-        cols.forEach(col => {
-            let data = col.innerText.replace(/,/g, ''); // Remove commas to prevent CSV misalignment
-            rowData.push('"' + data + '"');
-        });
-        csvContent += rowData.join(',') + '\r\n';
-    });
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'rate_challenges'), {
+                    state: appState.state, district: appState.district, unit: unit,
+                    originalRate: origRate, proposedRate: propRate, reason: reason,
+                    status: 'pending', requestedBy: document.getElementById('login-email').value,
+                    createdAt: Timestamp.now()
+                });
+                alert("Challenge submitted to DCM for approval.");
+                document.getElementById('challenge-modal').classList.add('hidden');
+            } catch(e) { alert("Error submitting challenge."); }
+        };
 
-    // Create a blob and trigger a download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-       
+        // DCT SUBMIT LOGIC
+        window.addToSummary = async () => {
+            const reportName = document.getElementById('report-name').value;
+            if(!reportName) return alert("Enter Assessment Reference Name.");
+
+            const reportArea = document.getElementById('report-area').value;
+
+            window.allEntries = [];
+            let totals = { quant: 0, expert: 0, damage: 0, hasDiscrepancy: false };
+            let sumData = {}, secData = {}, ucData = {}, chartSectors = {}, histCompMap = {};
+
+            window.categoryIds.forEach(id => {
+                const el = document.getElementById(`category-${id}`);
+                if(!el) return;
+
+                const hierarchy = el.querySelector('h3 span').innerText.replace(/[()]/g,'').split(' > ');
+                const sectorName = hierarchy[0].trim();
+                const componentName = hierarchy[1].trim();
+                const unitName = el.querySelector('h3').innerText.split(' (')[0].trim();
+                
+                const priorTotalQty = parseFloat(document.getElementById(`prior-qty-${id}`).value) || 0;
+                const currentCost = parseFloat(document.getElementById(`unit-cost-${id}`).value) || 0;
+                const expert = parseFloat(document.getElementById(`expert-${id}`).value) || 0;
+                const buildYear = parseInt(document.getElementById(`year-${id}`).value) || 2010;
+                const histCostPerUnit = parseFloat(document.getElementById(`hist-cost-${id}`).value) || 0;
+
+                const damagedPhysical = parseFloat(el.dataset.physical) || 0;
+                const quantDmg = parseFloat(el.dataset.quant) || 0;
+                const reconCost = quantDmg + expert; 
+                
+                const isDiscrepant = el.dataset.discrepant === 'true';
+                const discrepancyRatio = parseFloat(el.dataset.ratio) || 0;
+                
+                const weightVal = parseFloat(document.getElementById(`weight-${id}`).value) || 0;
+
+                const entry = {
+                    sector: sectorName, component: componentName, basicUnit: unitName, area: reportArea,
+                    prior: priorTotalQty, damaged: damagedPhysical,
+                    propDamaged: priorTotalQty>0 ? ((damagedPhysical/priorTotalQty)*100).toFixed(1) : 0,
+                    reconCost, quantDmg, expert, weight: weightVal,
+                    histCostPerUnit, currentCost, buildYear,
+                    totalHistoricalValue: priorTotalQty * histCostPerUnit,
+                    totalCurrentValue: priorTotalQty * currentCost,
+                    isDiscrepant, discrepancyRatio
+                };
+                window.allEntries.push(entry);
+
+                totals.quant += quantDmg; totals.expert += expert; totals.damage += reconCost;
+                if(isDiscrepant) totals.hasDiscrepancy = true;
+
+                if(!sumData[unitName]) sumData[unitName] = { u: unitName, dmgR:0, dmgU:0, reconR:0, reconU:0, propR:0, propU:0, pCntR:0, pCntU:0 };
+                if(reportArea==='Rural') {
+                    sumData[unitName].dmgR += damagedPhysical; sumData[unitName].reconR += reconCost;
+                    if(priorTotalQty>0) { sumData[unitName].propR += (damagedPhysical/priorTotalQty)*100; sumData[unitName].pCntR++; }
+                } else {
+                    sumData[unitName].dmgU += damagedPhysical; sumData[unitName].reconU += reconCost;
+                    if(priorTotalQty>0) { sumData[unitName].propU += (damagedPhysical/priorTotalQty)*100; sumData[unitName].pCntU++; }
+                }
+
+                if(!secData[sectorName]) secData[sectorName] = { d:0, recon:0, expert:0 };
+                secData[sectorName].d += quantDmg; secData[sectorName].expert += expert; secData[sectorName].recon += reconCost;
+
+                const baseSor = SOR_UNIT_RATES[unitName] || { ref: 'Custom' };
+                ucData[`${sectorName}-${unitName}`] = { s: sectorName, c: unitName, cost: currentCost, ref: appState.customRates[unitName] ? "Approved Custom Rate" : baseSor.ref };
+                chartSectors[sectorName] = (chartSectors[sectorName]||0) + reconCost;
+
+                const compKey = `${sectorName} > ${componentName}`;
+                if(!histCompMap[compKey]) histCompMap[compKey] = { histTotal:0, currTotal:0, years:[], units: [] };
+                histCompMap[compKey].histTotal += entry.totalHistoricalValue;
+                histCompMap[compKey].currTotal += entry.totalCurrentValue;
+                histCompMap[compKey].years.push(buildYear);
+                if(!histCompMap[compKey].units.includes(unitName)) histCompMap[compKey].units.push(unitName);
+            });
+
+            if(window.allEntries.length === 0) return alert("Add at least one unit.");
+
+            // POPULATE TABLES 1-4
+            const t1R = document.querySelector("#summary-table-1-rural tbody"); t1R.innerHTML = '';
+            const t1U = document.querySelector("#summary-table-1-urban tbody"); t1U.innerHTML = '';
+            
+            window.allEntries.forEach(e => {
+                const r1 = `<tr><td>${e.sector}</td><td>${e.basicUnit}</td><td>${e.prior.toFixed(2)}</td><td>${e.damaged.toFixed(2)}</td><td>${e.propDamaged}%</td></tr>`;
+                if(e.area==='Rural') { t1R.innerHTML+=r1; } else { t1U.innerHTML+=r1; }
+            });
+
+            const t2R = document.querySelector("#summary-table-2-rural tbody"); t2R.innerHTML = '';
+            const t2U = document.querySelector("#summary-table-2-urban tbody"); t2U.innerHTML = '';
+            Object.values(sumData).forEach(d => {
+                if(d.dmgR>0) t2R.innerHTML += `<tr><td>${d.u}</td><td>${d.dmgR.toFixed(2)}</td><td>${d.pCntR>0?(d.propR/d.pCntR).toFixed(1):0}%</td><td>₹${Math.round(d.reconR).toLocaleString('en-IN')}</td></tr>`;
+                if(d.dmgU>0) t2U.innerHTML += `<tr><td>${d.u}</td><td>${d.dmgU.toFixed(2)}</td><td>${d.pCntU>0?(d.propU/d.pCntU).toFixed(1):0}%</td><td>₹${Math.round(d.reconU).toLocaleString('en-IN')}</td></tr>`;
+            });
+
+            document.getElementById('summary-text').innerText = `Total Final Reconstruction Cost: ₹${Math.round(totals.damage).toLocaleString('en-IN')} | Total Quantitative (Historical): ₹${Math.round(totals.quant).toLocaleString('en-IN')} | Total Expert Adj: ₹${Math.round(totals.expert).toLocaleString('en-IN')}`;
+
+            const t3 = document.querySelector("#summary-table-3 tbody"); t3.innerHTML = '';
+            Object.keys(secData).forEach(k => {
+                t3.innerHTML += `<tr><td>${k}</td><td>₹${Math.round(secData[k].d).toLocaleString('en-IN')}</td><td>₹${Math.round(secData[k].expert).toLocaleString('en-IN')}</td><td>₹${Math.round(secData[k].recon).toLocaleString('en-IN')}</td></tr>`;
+            });
+
+            const t4 = document.querySelector("#summary-table-4 tbody"); t4.innerHTML = '';
+            Object.values(ucData).forEach(u => t4.innerHTML += `<tr><td>${u.s}</td><td>${u.c}</td><td>₹${Math.round(u.cost).toLocaleString('en-IN')}</td><td>${u.ref}</td></tr>`);
+
+            // POPULATE TABLE 5
+            const t5 = document.querySelector("#summary-table-5 tbody"); t5.innerHTML = '';
+            Object.keys(histCompMap).forEach(comp => {
+                const data = histCompMap[comp];
+                const avgYear = Math.round(data.years.reduce((a,b)=>a+b,0)/data.years.length);
+                const delta = data.currTotal - data.histTotal;
+                const deltaStr = delta >= 0 ? `+₹${Math.round(delta).toLocaleString('en-IN')} (Inflation)` : `-₹${Math.abs(Math.round(delta)).toLocaleString('en-IN')} (Deflation)`;
+                const color = delta >= 0 ? '#dc2626' : '#16a34a';
+                t5.innerHTML += `<tr><td><strong>${comp}</strong><br><span style="font-size:11px; color:#6c757d;">[${data.units.join(', ')}]</span></td><td>${avgYear}</td><td style="color:#0284c7; font-weight:bold;">₹${Math.round(data.histTotal).toLocaleString('en-IN')}</td><td style="color:#b91c1c; font-weight:bold;">₹${Math.round(data.currTotal).toLocaleString('en-IN')}</td><td style="color:${color}; font-weight:bold;">${deltaStr}</td></tr>`;
+            });
+
+            document.getElementById('result').style.display = 'block';
+
+            if(window.dmgChart) window.dmgChart.destroy();
+            window.dmgChart = new Chart(document.getElementById('damageChart').getContext('2d'), {
+                type: 'pie', data: { labels: Object.keys(chartSectors), datasets: [{ data: Object.values(chartSectors), backgroundColor: ['#007bff','#28a745','#dc3545','#ffc107','#6f42c1'] }] }
+            });
+
+            // PUSH TO FIREBASE
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), {
+                    state: appState.state, district: appState.district, area: reportArea,
+                    name: reportName, entries: window.allEntries, totals,
+                    userId: appState.currentUser.uid, createdAt: Timestamp.now()
+                });
+                alert(totals.hasDiscrepancy ? "Report saved with WARNINGS (Anomaly flagged for DCM)." : "Assessment calculated locally AND synced to National Cloud successfully!");
+            } catch(e) { console.error(e); alert("Local calculation done. Cloud sync failed."); }
+        };
+
+        window.exportToExcel = (tableId, filename) => {
+            let csv = [];
+            document.querySelectorAll(`#${tableId} tr`).forEach(r => {
+                let row = [];
+                r.querySelectorAll('th, td').forEach(c => row.push(`"${c.innerText.replace(/"/g, '""')}"`));
+                csv.push(row.join(','));
+            });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv.join('\n')], { type: 'text/csv' }));
+            link.download = filename; link.click();
+        };
+
+        // ==========================================
+        // DCM DASHBOARD LOGIC
+        // ==========================================
+        window.switchDcmTab = (tab) => {
+            document.getElementById('dcm-tab-analytics').classList.toggle('hidden', tab !== 'analytics');
+            document.getElementById('dcm-tab-master-tables').classList.toggle('hidden', tab !== 'master-tables');
+            document.getElementById('dcm-tab-validity').classList.toggle('hidden', tab !== 'validity');
+            document.getElementById('dcm-tab-approvals').classList.toggle('hidden', tab !== 'approvals');
+            document.getElementById('dcm-tab-evf-insights').classList.toggle('hidden', tab !== 'evf-insights');
+            
+            document.getElementById('tab-analytics').className = tab === 'analytics' ? "font-bold text-blue-600 border-b-2 border-blue-600 pb-2 transition-colors whitespace-nowrap" : "font-bold text-slate-500 pb-2 hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer";
+            document.getElementById('tab-master-tables').className = tab === 'master-tables' ? "font-bold text-blue-600 border-b-2 border-blue-600 pb-2 transition-colors whitespace-nowrap" : "font-bold text-slate-500 pb-2 hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer";
+            document.getElementById('tab-validity').className = tab === 'validity' ? "font-bold text-red-600 border-b-2 border-red-600 pb-2 transition-colors flex items-center gap-2 whitespace-nowrap" : "font-bold text-slate-500 pb-2 hover:text-red-600 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer";
+            document.getElementById('tab-approvals').className = tab === 'approvals' ? "font-bold text-blue-600 border-b-2 border-blue-600 pb-2 transition-colors flex items-center gap-2 whitespace-nowrap" : "font-bold text-slate-500 pb-2 hover:text-blue-500 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer";
+            document.getElementById('tab-evf-insights').className = tab === 'evf-insights' ? "font-bold text-emerald-600 border-b-2 border-emerald-600 pb-2 transition-colors flex items-center gap-2 whitespace-nowrap" : "font-bold text-slate-500 pb-2 hover:text-emerald-600 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer";
+        };
+
+        window.processDCMData = () => {
+            const filter = document.getElementById('dash-filter-state').value;
+            let data = appState.cloudReports;
+            if(filter !== 'all') data = data.filter(r => r.state === filter);
+
+            let kpis = { quant:0, expert:0, recov:0, count:data.length, anomalyCount: 0 };
+            let geoMap = {}, secMap = {};
+            let anomaliesHTML = '';
+            let masterTableHTML = '';
+
+            data.forEach(r => {
+                kpis.quant += (r.totals?.quant || 0);
+                kpis.expert += (r.totals?.expert || 0);
+                kpis.recov += (r.totals?.damage || 0); 
+                
+                const loc = filter==='all' ? r.state : r.district;
+                geoMap[loc] = (geoMap[loc]||0) + (r.totals?.damage || 0);
+
+                if (r.totals?.hasDiscrepancy) {
+                    kpis.anomalyCount++;
+                    r.entries.filter(e => e.isDiscrepant).forEach(e => {
+                        let sev = e.weight === 0.875 ? 'Full Damage (>75%)' : e.weight === 0.525 ? 'Severe (30-75%)' : 'Partial (<30%)';
+                        let rText = e.weight === 0 ? "Quantity Override" : sev;
+                        anomaliesHTML += `
+                            <tr class="hover:bg-red-50 transition-colors border-b border-red-100">
+                                <td class="p-4 font-bold text-slate-800">${r.district}, ${r.state}</td>
+                                <td class="p-4 text-slate-600">${r.name}</td>
+                                <td class="p-4 font-bold text-red-600">${e.sector} > ${e.basicUnit}</td>
+                                <td class="p-4 text-xs text-slate-700">
+                                    Claimed: <strong>${rText}</strong><br>
+                                    Actual Physical Area Ratio: <strong>${e.discrepancyRatio}%</strong>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                (r.entries || []).forEach(e => { 
+                    secMap[e.sector] = (secMap[e.sector]||0) + e.reconCost; 
+                    
+                    // Build Centralized Master Table HTML
+                    masterTableHTML += `
+                        <tr class="hover:bg-blue-50 border-b border-slate-100">
+                            <td class="p-3">${r.state}</td>
+                            <td class="p-3 font-bold">${r.district}</td>
+                            <td class="p-3">${e.area || 'N/A'}</td>
+                            <td class="p-3">${e.sector}</td>
+                            <td class="p-3">${e.basicUnit}</td>
+                            <td class="p-3">${e.prior}</td>
+                            <td class="p-3 font-bold text-red-500">${e.damaged}</td>
+                            <td class="p-3">₹${Math.round(e.quantDmg).toLocaleString('en-IN')}</td>
+                            <td class="p-3 text-purple-600">₹${Math.round(e.expert).toLocaleString('en-IN')}</td>
+                            <td class="p-3 bg-blue-50 font-bold text-blue-700">₹${Math.round(e.reconCost).toLocaleString('en-IN')}</td>
+                        </tr>
+                    `;
+                });
+            });
+
+            document.getElementById('dcm-kpi-quant').innerText = `₹${Math.round(kpis.quant).toLocaleString('en-IN')}`;
+            document.getElementById('dcm-kpi-expert').innerText = `₹${Math.round(kpis.expert).toLocaleString('en-IN')}`;
+            document.getElementById('dcm-kpi-recovery').innerText = `₹${Math.round(kpis.recov).toLocaleString('en-IN')}`;
+            document.getElementById('dcm-kpi-reports').innerText = kpis.count;
+            document.getElementById('anomaly-badge').innerText = kpis.anomalyCount;
+            
+            document.getElementById('dcm-anomalies-table').innerHTML = anomaliesHTML || `<tr><td colspan="4" class="p-8 text-center text-slate-400">No data anomalies detected.</td></tr>`;
+            document.getElementById('dcm-master-table-body').innerHTML = masterTableHTML || `<tr><td colspan="10" class="p-8 text-center text-slate-400">No data submitted yet.</td></tr>`;
+
+            if(appState.dcmCharts.bar) appState.dcmCharts.bar.destroy();
+            appState.dcmCharts.bar = new Chart(document.getElementById('dcmBarChart').getContext('2d'), {
+                type: 'bar', data: { labels: Object.keys(geoMap), datasets: [{ label:'Recovery Need', data: Object.values(geoMap), backgroundColor: '#3b82f6' }] },
+                options: { maintainAspectRatio: false }
+            });
+
+            if(appState.dcmCharts.pie) appState.dcmCharts.pie.destroy();
+            appState.dcmCharts.pie = new Chart(document.getElementById('dcmPieChart').getContext('2d'), {
+                type: 'doughnut', data: { labels: Object.keys(secMap), datasets: [{ data: Object.values(secMap), backgroundColor: ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6'] }] },
+                options: { maintainAspectRatio: false }
+            });
+
+            document.getElementById('dcm-reports-table').innerHTML = data.map(r => `
+                <tr class="${r.totals?.hasDiscrepancy ? 'bg-red-50 border-l-4 border-red-500' : 'hover:bg-slate-50 border-b border-slate-100'}">
+                    <td class="p-4">${r.state}/${r.district}</td><td class="p-4 font-bold">${r.name}</td>
+                    <td class="p-4 text-blue-600">₹${Math.round(r.totals?.quant||0).toLocaleString('en-IN')}</td>
+                    <td class="p-4 font-bold text-red-600">₹${Math.round(r.totals?.damage||0).toLocaleString('en-IN')}</td>
+                    <td class="p-4 text-center">${r.totals?.hasDiscrepancy ? '<span title="Mathematical Discrepancy Found">⚠️ Flagged</span>' : '✅ Valid'}</td>
+                </tr>
+            `).join('');
+        };
+
+        window.exportNationalData = () => {
+            let csv = [];
+            document.querySelectorAll(`#dcm-master-table tr`).forEach(r => {
+                let row = [];
+                r.querySelectorAll('th, td').forEach(c => row.push(`"${c.innerText.replace(/"/g, '""')}"`));
+                csv.push(row.join(','));
+            });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv.join('\n')], { type: 'text/csv' }));
+            link.download = "National_Master_Database_Export.csv"; 
+            link.click();
+        };
+
+        window.renderChallenges = () => {
+            const filter = document.getElementById('dash-filter-state').value;
+            let pending = appState.challenges.filter(c => c.status === 'pending');
+            if(filter !== 'all') pending = pending.filter(c => c.state === filter);
+            
+            document.getElementById('pending-badge').innerText = pending.length;
+
+            document.getElementById('dcm-challenges-table').innerHTML = pending.map(c => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-4">${c.district}, ${c.state}</td>
+                    <td class="p-4 font-bold text-blue-700">${c.unit}</td>
+                    <td class="p-4 text-slate-500">₹${c.originalRate}</td>
+                    <td class="p-4 font-bold text-orange-600">₹${c.proposedRate}</td>
+                    <td class="p-4 text-xs max-w-xs truncate" title="${c.reason}">${c.reason}</td>
+                    <td class="p-4 flex gap-2">
+                        <button onclick="updateChallengeStatus('${c.id}', 'approved')" class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-bold hover:bg-green-200">Approve</button>
+                        <button onclick="updateChallengeStatus('${c.id}', 'rejected')" class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs font-bold hover:bg-red-200">Reject</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" class="p-8 text-center text-slate-400">No pending rate challenges for selected geography.</td></tr>`;
+        };
+
+        window.renderEVFInsights = () => {
+            const filter = document.getElementById('dash-filter-state').value;
+            let data = appState.evfReports;
+            if(filter !== 'all') data = data.filter(r => r.state === filter);
+
+            const container = document.getElementById('dcm-evf-reports-container');
+            
+            if (data.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-400 py-8">No expert validation reports available for this region.</div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(r => {
+                const dateStr = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleString() : 'Recent';
+                const obsList = r.observations.map(o => `<span class="inline-block bg-white border border-slate-200 text-[10px] px-2 py-1 rounded mr-2 mb-2"><strong>${o.code}</strong>: ${o.text}</span>`).join('');
+                
+                return `
+                    <div class="border border-slate-200 rounded-xl bg-slate-50 overflow-hidden shadow-sm">
+                        <div class="bg-emerald-800 text-white px-6 py-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-black">${r.siteName}</span>
+                                <span class="text-xs text-emerald-200 ml-2 font-bold">(${r.district}, ${r.state})</span>
+                            </div>
+                            <div class="text-xs font-mono bg-white/20 px-2 py-1 rounded">📍 ${r.gps}</div>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <p class="text-xs font-bold text-slate-400 uppercase mb-2">Raw Field Observations</p>
+                                ${obsList}
+                            </div>
+                            <div class="bg-white border border-emerald-100 p-4 rounded-lg shadow-inner">
+                                ${r.insightHtml}
+                            </div>
+                            <div class="mt-4 text-[10px] text-slate-400 text-right border-t border-slate-200 pt-2">
+                                Validated by: ${r.expertEmail} | ${dateStr}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.updateChallengeStatus = async (id, status) => {
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rate_challenges', id), {
+                    status: status, updatedAt: Timestamp.now()
+                }, { merge: true });
+            } catch(e) { console.error(e); }
+        };
     </script>
-
 </body>
 </html>
