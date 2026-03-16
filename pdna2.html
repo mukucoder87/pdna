@@ -684,29 +684,52 @@
             if(STATE_DATA[s]) STATE_DATA[s].sort().forEach(d => t.add(new Option(d, d)));
         };
 
-        window.handleLogin = () => {
-            if(!document.getElementById('login-email').value.includes('@')) return alert("Enter valid official email.");
-            appState.state = document.getElementById('login-state').value;
-            appState.district = document.getElementById('login-district').value;
-            
-            document.getElementById('view-login').classList.add('hidden');
-            
-            if(appState.role === 'dct') {
-                document.getElementById('pdna-dct-view').classList.remove('hidden');
-                document.getElementById('dct-geo-header').innerText = `${appState.district}, ${appState.state} - DCT Portal`;
-                window.updateOpenCardsCosts(); 
-            } else if (appState.role === 'evf') {
-                document.getElementById('pdna-evf-view').classList.remove('hidden');
-                document.getElementById('evf-geo-header').innerText = `${appState.district}, ${appState.state}`;
-                window.renderEVFForm();
-            } else {
-                document.getElementById('pdna-dcm-view').classList.remove('hidden');
-                window.processDCMData();
-                window.renderChallenges();
-                window.renderEVFInsights();
-            }
-        };
+       window.handleLogin = () => {
 
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+
+    if(!email){
+        alert("Enter official email address.");
+        return;
+    }
+
+    // Allowed government domains
+    const allowedDomains = [
+        "@nic.in",
+        "@gov.in",
+        "@state.gov.in",
+        "@ias.nic.in"
+    ];
+
+    const validDomain = allowedDomains.some(domain => email.endsWith(domain));
+
+    if(!validDomain){
+        alert("Login allowed only with official government email.");
+        return;
+    }
+
+    appState.currentUser = {
+        email: email
+    };
+
+    appState.state = document.getElementById('login-state').value;
+    appState.district = document.getElementById('login-district').value;
+
+    document.getElementById('view-login').classList.add('hidden');
+
+    if(appState.role === 'dct'){
+        document.getElementById('pdna-dct-view').classList.remove('hidden');
+    }
+
+    if(appState.role === 'evf'){
+        document.getElementById('pdna-evf-view').classList.remove('hidden');
+    }
+
+    if(appState.role === 'dcm'){
+        document.getElementById('pdna-dcm-view').classList.remove('hidden');
+    }
+
+};
         // ==========================================
         // EVF LOGIC (EXPERT VALIDATION)
         // ==========================================
