@@ -1317,28 +1317,43 @@
                 type: 'pie', data: { labels: Object.keys(chartSectors), datasets: [{ data: Object.values(chartSectors), backgroundColor: ['#007bff','#28a745','#dc3545','#ffc107','#6f42c1'] }] }
             });
 
-            // PUSH TO FIREBASE
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), {
-                    state: appState.state, district: appState.district, area: reportArea,
-                    name: reportName, entries: window.allEntries, totals,
-                    userId: appState.currentUser.uid, createdAt: Timestamp.now()
-                });
-                alert(totals.hasDiscrepancy ? "Report saved with WARNINGS (Anomaly flagged for DCM)." : "Assessment calculated locally AND synced to National Cloud successfully!");
-            } catch(e) { console.error(e); alert("Local calculation done. Cloud sync failed."); }
-        };
+            // SEND TO GOOGLE SHEETS
+try {
 
-        window.exportToExcel = (tableId, filename) => {
-            let csv = [];
-            document.querySelectorAll(`#${tableId} tr`).forEach(r => {
-                let row = [];
-                r.querySelectorAll('th, td').forEach(c => row.push(`"${c.innerText.replace(/"/g, '""')}"`));
-                csv.push(row.join(','));
-            });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob([csv.join('\n')], { type: 'text/csv' }));
-            link.download = filename; link.click();
+    await fetch(API_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+
+            type:"report",
+
+            state:appState.state,
+            district:appState.district,
+            area:reportArea,
+            name:reportName,
+
+            entries:window.allEntries,
+            totals:totals
+
+        })
+    });
+
+    alert(
+        totals.hasDiscrepancy
+        ? "Report submitted with WARNINGS (Anomaly flagged)."
+        : "Assessment submitted successfully to national database."
+    );
+
+} catch(e){
+
+    console.error(e);
+    alert("Local calculation completed but submission to Google Sheets failed.");
+
+}
         };
+        
 
         // ==========================================
         // DCM DASHBOARD LOGIC
